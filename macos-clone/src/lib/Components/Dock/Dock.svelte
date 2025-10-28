@@ -1,27 +1,46 @@
 <script>
+import FinderIcon from '$lib/assets/static/Finder.png';
+import LaunchpadIcon from '$lib/assets/static/launchpad.png';
+import PhotosIcon from '$lib/assets/static/photos.png';
+import CalculatorIcon from '$lib/assets/static/calculator.png';
+import CalendarIcon from '$lib/assets/static/calendar.png';
+import VSCodeIcon from '$lib/assets/static/vscode.png';
+import AppstoreIcon from '$lib/assets/static/Appstore.png';
+import FoxIcon from '$lib/assets/static/fox.png';
+import WallpaperIcon from '$lib/assets/static/wallpaper.png';
 
-  let apps = [
-    { name: "Finder", icon: "/Finder.png", active: true },
-    { name: "Launchpad", icon: "/launchpad.png" },
-    { name: "Photos", icon: "/photos.png" },
-    { name: "Calculator", icon: "/calculator.png", active: true }, 
-    { name: "Calendar", icon: "/calendar.png", active: true },
-    { name: "VS Code", icon: "/vscode.png" },
-    { name: "App Store", icon: "/Appstore.png" },
-    { name: "Portfolio", icon: "/fox.png" },
-    { name: "Wallpaper", icon: "/wallpaper.png" },
-  ];
+import WallpaperApp from "../wallpaper/wallpaper.svelte";
 
-  let hoveredIndex = -1;
+let apps = [
+  { name: "Finder", icon: FinderIcon, active: true },
+  { name: "Launchpad", icon: LaunchpadIcon },
+  { name: "Photos", icon: PhotosIcon },
+  { name: "Calculator", icon: CalculatorIcon, active: true }, 
+  { name: "Calendar", icon: CalendarIcon, active: true },
+  { name: "VS Code", icon: VSCodeIcon },
+  { name: "App Store", icon: AppstoreIcon },
+  { name: "Portfolio", icon: FoxIcon },
+  { name: "Wallpaper", icon: WallpaperIcon },
+];
 
-  // This function is used to get the scale of the icon (macOS Dock "magnification")
-  function getScale(i) { 
-    const dist = Math.abs(i - hoveredIndex);
-    if (dist === 0) return 1.6;
-    if (dist === 1) return 1.3;
-    if (dist === 2) return 1.1;
-    return 1.0;
+let hoveredIndex = -1;
+let openWallpaper = false;
+let wallpaperKey = 0; 
+
+function getScale(i) { 
+  const dist = Math.abs(i - hoveredIndex);
+  if (dist === 0) return 1.6;
+  if (dist === 1) return 1.3;
+  if (dist === 2) return 1.1;
+  return 1.0;
+}
+
+function handleAppClick(app) {
+  if (app.name === "Wallpaper") {
+    openWallpaper = true;
+    wallpaperKey += 1; // ✅ force remount each time clicked
   }
+}
 </script>
 
 <div
@@ -34,36 +53,20 @@
   style="min-width: 850px;"
   role="menubar"
 >
-<!--
-  on focus is used to get the index of the app that is focused means it tells which app is focused using hover index
-
-  onblur is used to remove the focus from the app when it is not focused
-
-  onmouseenter is used to get the index of the app that is hovered means it tells which app is hovered using hover index
-
-  onmouseleave is used to remove the hover from the app when it is not hovered
-
-  style="outline: none;" is used to remove the outline from the app when it is focused
-
-  role="menuitem" is used to tell the app that it is a menu item
-
-  aria-label= is used to tell the app that it is a menu item
--->
+<!-- Dock -->
   {#each apps as app, i}
     <button
       type="button"
       class="relative transition-all duration-300 ease-out cursor-pointer flex items-end focus:outline-none"
       on:focus={() => (hoveredIndex = i)}  
-     
-      
       on:blur={() => (hoveredIndex = -1)}
       on:mouseenter={() => (hoveredIndex = i)}
       on:mouseleave={() => (hoveredIndex = -1)}
+      on:click={() => handleAppClick(app)} 
       style="outline: none;"
       role="menuitem"
       aria-label={app.name}
     >
-    <!-- this is used to show the name of the app when it is hovered -->
       {#if hoveredIndex === i}
         <div
           class="absolute left-1/2 -translate-x-1/2 -top-12 
@@ -71,8 +74,8 @@
                  px-3 py-1.5 rounded-lg 
                  transition-opacity duration-200 whitespace-nowrap z-10"
         >
-          {app.name} 
-          <!-- this is used to show the name of the app when it is hovered -->  
+          {app.name}
+          <!-- hover effect using this can see the names of the dock app  -->
         </div>
       {/if}
 
@@ -89,13 +92,18 @@
     </button>
 
     {#if i === 1 || i === 6}
-      <div class="flex items-center self-center"> 
-        <!-- this is used to add separator line after certain icons using flex items-center  -->
+      <div class="flex items-center self-center">
         <div class="w-px h-10 bg-black mx-2 self-center"></div>
       </div>
     {/if}
   {/each}
 </div>
+<!-- whenever wallpaperKey changes, remounts correctly on each click -->
+{#if openWallpaper}
+  {#key wallpaperKey}
+    <WallpaperApp onClose={() => (openWallpaper = false)} />
+  {/key}
+{/if}
 
 <style> 
   img {

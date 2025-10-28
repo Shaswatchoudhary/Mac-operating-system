@@ -80,7 +80,7 @@
 
         <!-- Dropdown for Finder -->
         {#if finderMenu && item === "Finder"}
-          <div class="absolute top-full left-0 mt-1 bg-gray-800/50 backdrop-blur-lg text-white rounded shadow-lg min-w-[180px] z-50">
+          <div class="absolute top-full left-0 mt-1 bg-gray-900/50 backdrop-blur-lg text-white rounded shadow-lg min-w-[180px] z-50">
             {#each finderItems as fi}
               <div class="px-4 py-2 hover:bg-gray-900/20 cursor-pointer">{fi}</div>
             {/each}
