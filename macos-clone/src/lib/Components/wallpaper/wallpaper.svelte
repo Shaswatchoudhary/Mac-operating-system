@@ -1,6 +1,6 @@
 <script>
-  export let activeApp; // ✅ Prop from Dock to control open/close
-  export let onSelect;  // ✅ NEW: callback to notify Desktop of selected wallpaper
+  export let activeApp; 
+  export let onSelect;  
 
   let selectedWallpaper = 0;
   let isMaximized = false;
@@ -28,7 +28,6 @@
   function selectWallpaper(index) {
     selectedWallpaper = index;
 
-    // ✅ NEW: notify parent (Desktop) about the selected wallpaper
     if (onSelect) {
       onSelect(wallpapers[index].image);
     }
@@ -40,17 +39,15 @@
 
   function closeApp() {
     isAppOpen = false;
-    activeApp = null; // close the app in Dock too
+    activeApp = null; 
   }
 </script>
 
 {#if isAppOpen}
 <div class="min-h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 flex items-center justify-center p-8">
-  <!-- Window Container -->
   <div 
     class="bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden transition-all duration-300 {isMaximized ? 'w-full h-full' : 'w-[900px] h-[600px]'} relative"
   >
-    <!-- Title Bar -->
     <div class="bg-gradient-to-b from-gray-100 to-gray-200 border-b border-gray-300 px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <button 
@@ -66,9 +63,9 @@
       <div class="w-16" />
     </div>
 
-    <!-- Content Area -->
+   
     <div class="flex h-[calc(100%-52px)]">
-      <!-- Sidebar -->
+   
       <div class="w-48 bg-gray-50 border-r border-gray-200 p-4">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
           Settings
@@ -90,7 +87,6 @@
           <p class="text-sm text-gray-600">Select a wallpaper from the options below</p>
         </div>
 
-        <!-- Wallpaper Grid -->
         <div class="grid grid-cols-3 gap-4">
           {#each wallpapers as wallpaper, index}
             <div
@@ -120,7 +116,6 @@
           {/each}
         </div>
 
-        <!-- Options Section -->
         <div class="mt-8 pt-6 border-t border-gray-200">
           <div class="flex items-center justify-between mb-4">
             <label class="text-sm text-gray-700">Change picture:</label>
@@ -145,6 +140,5 @@
 {/if}
 
 <style>
-  /* Add Tailwind CSS via CDN or your build process */
   @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
 </style>

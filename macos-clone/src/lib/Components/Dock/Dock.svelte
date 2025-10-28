@@ -35,12 +35,12 @@ function getScale(i) {
   return 1.0;
 }
 
-function handleAppClick(app) {
-  if (app.name === "Wallpaper") {
-    openWallpaper = true;
-    wallpaperKey += 1; // ✅ force remount each time clicked
-  }
-}
+// function handleAppClick(app) {
+//   if (app.name === "Wallpaper") {
+//     openWallpaper = true;
+//     wallpaperKey += 1; // ✅ force remount each time clicked
+//   }
+// }
 </script>
 
 <div
@@ -85,11 +85,13 @@ function handleAppClick(app) {
         draggable="false"
         class="w-14 h-14 rounded-xl transition-transform duration-200"
         style="transform: scale({getScale(i)});"
-      />
+      /> 
+      <!-- this is the active app indicator -->
       {#if app.active}
         <div class="absolute left-1/2 -translate-x-1/2 -bottom-1 w-1.5 h-1.5 bg-white/90 rounded-full"></div>
       {/if}
     </button>
+    <!-- this is the separator means |  the line between the docks apps-->
 
     {#if i === 1 || i === 6}
       <div class="flex items-center self-center">
@@ -97,13 +99,16 @@ function handleAppClick(app) {
       </div>
     {/if}
   {/each}
+  <!-- this uses to showcase the app in the dock (visible it )-->
 </div>
 <!-- whenever wallpaperKey changes, remounts correctly on each click -->
-{#if openWallpaper}
+<!-- {#if openWallpaper}
   {#key wallpaperKey}
     <WallpaperApp onClose={() => (openWallpaper = false)} />
   {/key}
-{/if}
+{/if} 
+becz of this the extra layer is doing problem so we hav to check for this 
+--> 
 
 <style> 
   img {

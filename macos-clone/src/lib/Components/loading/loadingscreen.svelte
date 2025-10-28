@@ -2,39 +2,45 @@
   import { onMount } from 'svelte';
   import appleLogo from '$lib/assets/static/mac2.png';
   import bootSound from '$lib/assets/audio/macos.mp3';
-  
+
   export let onFinish;
-  
+
   let audio;
   let progress = 0;
   let fadeOut = false;
-  
+
   onMount(() => {
-    // Play boot sound
     audio = new Audio(bootSound);
-    audio.volume = 0.5; // Adjust volume (0.0 to 1.0)
-    audio.play().catch(err => {
-      console.log('Audio autoplay prevented:', err);
-    });
-    
-    // Simulate loading progress
+    audio.volume = 0.5;
+
+    const playAudio = () => {
+      audio.play().catch(err => {
+        console.log('Autoplay blocked, waiting for user interaction.');
+        window.addEventListener('click', () => {
+          audio.play();
+        }, { once: true });
+      });
+    };
+
+    playAudio();
+
+   
     const interval = setInterval(() => {
       progress += Math.random() * 15;
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
-        
-        // Wait a bit, then fade out
+
         setTimeout(() => {
           fadeOut = true;
           setTimeout(() => {
             onFinish();
-          }, 500); // Match this with CSS transition duration
+          }, 500);
         }, 500);
       }
     }, 200);
-    
-    // Cleanup
+
+ 
     return () => {
       clearInterval(interval);
       if (audio) audio.pause();
@@ -67,28 +73,27 @@
     z-index: 9999;
     transition: opacity 0.6s ease-in-out;
   }
-  
+
   .boot-screen.fade-out {
     opacity: 0;
   }
-  
+
   .content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4rem;
   }
-  
-  /* Bigger, smoother Apple logo */
-  .logo {
-  width: 130px;
-  height: 130px;
-  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
-  animation: pulse 2.5s ease-in-out infinite;
-  transition: transform 0.3s ease;
-}
 
-  
+  /* Apple logo */
+  .logo {
+    width: 130px;
+    height: 130px;
+    filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+    animation: pulse 2.5s ease-in-out infinite;
+    transition: transform 0.3s ease;
+  }
+
   @keyframes pulse {
     0%, 100% {
       opacity: 1;
@@ -99,11 +104,11 @@
       transform: scale(1.03);
     }
   }
-  
+
   .progress-container {
     width: 260px;
   }
-  
+
   .progress-bar {
     width: 100%;
     height: 5px;
@@ -112,7 +117,7 @@
     overflow: hidden;
     box-shadow: 0 0 5px rgba(255,255,255,0.1);
   }
-  
+
   .progress-fill {
     height: 100%;
     background: #fff;
