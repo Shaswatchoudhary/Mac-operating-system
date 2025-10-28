@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import appleLogo from '$lib/assets/static/mac2.png';
+  import appleLogo from '$lib/assets/static/mac5.png';
   import bootSound from '$lib/assets/audio/macos.mp3';
 
   export let onFinish;
