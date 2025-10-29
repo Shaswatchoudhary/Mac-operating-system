@@ -1,55 +1,56 @@
 <script>
   import FinderIcon from '$lib/assets/static/Finder.png';
   import LaunchpadIcon from '$lib/assets/static/launchpad.png';
-  // import PhotosIcon from '$lib/assets/static/photos.png';
-  // import CalculatorIcon from '$lib/assets/static/calculator.png';
-  // import CalendarIcon from '$lib/assets/static/calendar.png';
-  // import WindcodeIcon from '$lib/assets/static/vscode.png';
-  // import AppstoreIcon from '$lib/assets/static/Appstore.png';
+  import PhotosIcon from '$lib/assets/static/photos.png';
+  import CalculatorIcon from '$lib/assets/static/calculator.png';
+  import CalendarIcon from '$lib/assets/static/calendar.png';
+  import WindcodeIcon from '$lib/assets/static/vscode.png';
+  import AppstoreIcon from '$lib/assets/static/Appstore.png';
   import FoxIcon from '$lib/assets/static/fox.png';
-  // import WallpaperIcon from '$lib/assets/static/wallpaper.png';
+  import WallpaperIcon from '$lib/assets/static/wallpaper.png';
 
   import PortfolioApp from "../Portfolio/PortfolioApp.svelte";
-  // import CalculatorApp from "../Calculator/calculator.svelte"; 
-  // import PhotosApp from "../Photos/photos.svelte"; 
-  // import CalendarApp from "../Calendar/Calendar.svelte"; 
-  // import WindcodeApp from "../windcode/windcode.svelte";
-  // import AppstoreApp from "../Appstore/Appstore.svelte";
-  // import WallpaperApp from "../Wallpaper/wallpaper.svelte";
-  // import LaunchpadApp from "../launchpad/launchpad.svelte";
-  // import FinderApp from "../Finder/Finder.svelte";
+  import CalculatorApp from "../Calculator/calculator.svelte"; 
+  import PhotosApp from "../Photos/photos.svelte"; 
+  import CalendarApp from "../Calendar/Calendar.svelte"; 
+  import WindcodeApp from "../windcode/windcode.svelte";
+  import AppstoreApp from "../Appstore/Appstore.svelte";
+  import WallpaperApp from "../Wallpaper/wallpaper.svelte";
+  import LaunchpadApp from "../launchpad/launchpad.svelte";
+  import FinderApp from "../Finder/Finder.svelte";
 
   let apps = [
-    // { name: "Finder", icon: FinderIcon },
-    // { name: "Launchpad", icon: LaunchpadIcon },
-    // { name: "Photos", icon: PhotosIcon },
-    // { name: "Calculator", icon: CalculatorIcon },
-    // { name: "Calendar", icon: CalendarIcon },
-    // { name: "Windcode", icon: WindcodeIcon },
-    // { name: "App Store", icon: AppstoreIcon },
+    { name: "Finder", icon: FinderIcon },
+    { name: "Launchpad", icon: LaunchpadIcon },
+    { name: "Photos", icon: PhotosIcon },
+    { name: "Calculator", icon: CalculatorIcon },
+    { name: "Calendar", icon: CalendarIcon },
+    { name: "Windcode", icon: VSCodeIcon },
+    { name: "App Store", icon: AppstoreIcon },
     { name: "Portfolio", icon: FoxIcon }, 
-    // { name: "Wallpaper", icon: WallpaperIcon }, 
+    { name: "Wallpaper", icon: WallpaperIcon }, 
   ];
-
+// <!-- we are using this to open the apps -->
   let hoveredIndex = -1;
   let openPortfolio = false;
   let portfolioKey = 0;
-  // let openCalculator = false;
-  // let calculatorKey = 0;
-  // let openPhotos = false; 
-  // let photosKey = 0; 
-  // let openCalendar = false;
-  // let calendarKey = 0;
-  // let openWindcode = false;
-  // let windcodeKey = 0;
-  // let openAppstore = false;
-  // let appstoreKey = 0;
-  // let openWallpaper = false;
-  // let wallpaperKey = 0;
-  // let openFinder = false;
-  // let finderKey = 0;
-  // let openLaunchpad = false;
-  // let launchpadKey = 0;
+  let openCalculator = false;
+  let calculatorKey = 0;
+  let openPhotos = false; 
+  let photosKey = 0; 
+  let openCalendar = false;
+let calendarKey = 0;
+let openWindcode = false;
+let windcodeKey = 0;
+let openAppstore = false;
+let appstoreKey = 0;
+let openWallpaper = false;
+let wallpaperKey = 0;
+let openFinder = false;
+let finderKey = 0;
+let openLaunchpad = false;
+let launchpadKey = 0;
+
 
   function getScale(i) {
     const dist = Math.abs(i - hoveredIndex);
@@ -58,43 +59,42 @@
     if (dist === 2) return 1.1;
     return 1.0;
   }
-
+//function to open the apps
   function handleAppClick(app) {
     if (app.name === "Portfolio") {
       openPortfolio = true;
       portfolioKey += 1;
-    } 
-    // else if (app.name === "Calculator") {
-    //   openCalculator = true;
-    //   calculatorKey += 1;
-    // } else if (app.name === "Photos") {
-    //   openPhotos = true;
-    //   photosKey += 1;
-    // }
-    // else if (app.name === "Calendar") {
-    //   openCalendar = true;
-    //   calendarKey += 1;
-    // }
-    // else if (app.name === "Windcode") {
-    //   openWindcode = true;
-    //   windcodeKey += 1;
-    // }
-    // else if (app.name === "App Store") {
-    //   openAppstore = true;
-    //   appstoreKey += 1;
-    // }
-    // else if (app.name === "Wallpaper") {
-    //   openWallpaper = true;
-    //   wallpaperKey += 1;
-    // }
-    // else if (app.name === "Finder") {
-    //   openFinder = true;
-    //   finderKey += 1;
-    // }
-    // else if (app.name === "Launchpad") {
-    //   openLaunchpad = true;
-    //   launchpadKey += 1;
-    // }
+    } else if (app.name === "Calculator") {
+      openCalculator = true;
+      calculatorKey += 1;
+    } else if (app.name === "Photos") { // Add this
+      openPhotos = true;
+      photosKey += 1;
+    }
+    else if (app.name === "Calendar") {
+  openCalendar = true;
+  calendarKey += 1;
+}
+else if (app.name === "Windcode") {
+  openWindcode = true;
+  windcodeKey += 1;
+}
+else if (app.name === "App Store") {
+  openAppstore = true;
+  appstoreKey += 1;
+}
+else if (app.name === "Wallpaper") {
+  openWallpaper = true;
+  wallpaperKey += 1;
+}
+else if (app.name === "Finder") {
+  openFinder = true;
+  finderKey += 1;
+}
+else if (app.name === "Launchpad") {
+  openLaunchpad = true;
+  launchpadKey += 1;
+}
   }
 </script>
 
@@ -141,6 +141,12 @@
         style="transform: scale({getScale(i)});"
       />
     </button>
+
+    {#if i === 1 || i === 6}
+      <div class="flex items-center self-center">
+        <div class="w-px h-10 bg-black mx-2 self-center"></div>
+      </div>
+    {/if}
   {/each}
 </div>
 
@@ -151,57 +157,61 @@
   {/key}
 {/if}
 
-<!-- Commented out apps - uncomment when components are ready -->
-<!-- 
+<!-- opens Calculator app when clicked -->
 {#if openCalculator}
   {#key calculatorKey}
     <CalculatorApp onClose={() => (openCalculator = false)} />
   {/key}
 {/if}
 
+<!-- opens Photos app when clicked -->
 {#if openPhotos}
   {#key photosKey}
     <PhotosApp onClose={() => (openPhotos = false)} />
   {/key}
 {/if}
 
+<!-- opens Calendar app when clicked -->
 {#if openCalendar}
   {#key calendarKey}
     <CalendarApp onClose={() => (openCalendar = false)} />
   {/key}
 {/if}
 
+<!-- opens VS Code app when clicked -->
 {#if openWindcode}
   {#key windcodeKey}
     <WindcodeApp onClose={() => (openWindcode = false)} />
   {/key}
 {/if}
 
+<!-- opens App Store app when clicked -->
 {#if openAppstore}
   {#key appstoreKey}
     <AppstoreApp onClose={() => (openAppstore = false)} />
   {/key}
 {/if}
 
+<!-- opens Wallpaper app when clicked -->
 {#if openWallpaper}
   {#key wallpaperKey}
     <WallpaperApp onClose={() => (openWallpaper = false)} />
   {/key}
 {/if}
 
+<!-- opens finder app when clicked -->
 {#if openFinder}
   {#key finderKey}
     <FinderApp onClose={() => (openFinder = false)} />
   {/key}
 {/if}
 
+<!-- opens launchpad app when clicked -->
 {#if openLaunchpad}
   {#key launchpadKey}
     <LaunchpadApp onClose={() => (openLaunchpad = false)} />
   {/key}
 {/if}
--->
-
 <style>
   img {
     transition: transform 0.2s ease-out;
