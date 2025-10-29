@@ -13,7 +13,7 @@
   import CalculatorApp from "../Calculator/calculator.svelte"; 
   import PhotosApp from "../Photos/photos.svelte"; 
   import CalendarApp from "../Calendar/Calendar.svelte"; 
-  import VSCodeApp from "../VSCode/VSCode.svelte";
+  import WindcodeApp from "../windcode/windcode.svelte";
   import AppstoreApp from "../Appstore/Appstore.svelte";
   import WallpaperApp from "../Wallpaper/wallpaper.svelte";
   import LaunchpadApp from "../launchpad/launchpad.svelte";
@@ -40,8 +40,8 @@
   let photosKey = 0; 
   let openCalendar = false;
 let calendarKey = 0;
-let openVSCode = false;
-let vscodeKey = 0;
+let openWindcode = false;
+let windcodeKey = 0;
 let openAppstore = false;
 let appstoreKey = 0;
 let openWallpaper = false;
@@ -75,9 +75,9 @@ let launchpadKey = 0;
   openCalendar = true;
   calendarKey += 1;
 }
-else if (app.name === "VS Code") {
-  openVSCode = true;
-  vscodeKey += 1;
+else if (app.name === "Windcode") {
+  openWindcode = true;
+  windcodeKey += 1;
 }
 else if (app.name === "App Store") {
   openAppstore = true;
@@ -179,9 +179,9 @@ else if (app.name === "Launchpad") {
 {/if}
 
 <!-- opens VS Code app when clicked -->
-{#if openVSCode}
-  {#key vscodeKey}
-    <VSCodeApp onClose={() => (openVSCode = false)} />
+{#if openWindcode}
+  {#key windcodeKey}
+    <WindcodeApp onClose={() => (openWindcode = false)} />
   {/key}
 {/if}
 
