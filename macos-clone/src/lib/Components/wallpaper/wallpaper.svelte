@@ -1,135 +1,99 @@
 <script>
-  export let activeApp; 
-  export let onSelect;  
+  export let onSelect;
+  export let onClose = () => {};
 
   let selectedWallpaper = 0;
   let isMaximized = false;
-  let isAppOpen = true;
 
   import wallpaper1 from '$lib/assets/wallpaper/wallpaper1.png';
   import wallpaper2 from '$lib/assets/wallpaper/wallpaper2.png';
   import wallpaper3 from '$lib/assets/wallpaper/wallpaper3.png';
   import wallpaper4 from '$lib/assets/wallpaper/wallpaper4.png';
-  import wallpaper5 from '$lib/assets/wallpaper/wallpaper5.png';
-  import wallpaper6 from '$lib/assets/wallpaper/wallpaper6.png';
-  import wallpaper7 from '$lib/assets/wallpaper/wallpaper7.png';
   
-  // Using placeholder images - replace with your actual wallpaper paths
+  // Wallpapers array - reduced to 4 for brevity
   let wallpapers = [
     { name: "Wallpaper 1", image: wallpaper1 },
     { name: "Wallpaper 2", image: wallpaper2 },
     { name: "Wallpaper 3", image: wallpaper3 },
-    { name: "Wallpaper 4", image: wallpaper4 },
-    { name: "Wallpaper 5", image: wallpaper5 },
-    { name: "Wallpaper 6", image: wallpaper6 },
-    { name: "Wallpaper 7", image: wallpaper7 },
+    { name: "Wallpaper 4", image: wallpaper4 }
   ];
 
+  // Select wallpaper and notify parent component
   function selectWallpaper(index) {
     selectedWallpaper = index;
-
-    if (onSelect) {
-      onSelect(wallpapers[index].image);
-    }
-  }
-
-  function toggleMaximize() {
-    isMaximized = !isMaximized;
-  }
-
-  function closeApp() {
-    isAppOpen = false;
-    activeApp = null; 
+    if (onSelect) onSelect(wallpapers[index].image);
   }
 </script>
 
-{#if isAppOpen}
-<div class="min-h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 flex items-center justify-center p-8">
-  <div 
-    class="bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden transition-all duration-300 {isMaximized ? 'w-full h-full' : 'w-[900px] h-[600px]'} relative"
-  >
-    <div class="bg-gradient-to-b from-gray-100 to-gray-200 border-b border-gray-300 px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <button 
-          on:click={closeApp}
-          class="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors" />
-        <button class="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors" />
-        <button 
-          on:click={toggleMaximize}
-          class="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors"
-        />
+<!-- Removed blur effect from overlay -->
+<div class="settings-overlay">
+  <div class="settings-window {isMaximized ? 'maximized' : ''}">
+    <!-- Window header with macOS controls -->
+    <div class="window-header">
+      <div class="window-controls">
+        <button on:click={onClose} class="control close" />
+        <button class="control minimize" />
+        <button on:click={() => isMaximized = !isMaximized} class="control maximize" />
       </div>
-      <div class="text-sm font-semibold text-gray-700">Desktop & Screen Saver</div>
-      <div class="w-16" />
+      <div class="window-title">Desktop & Screen Saver</div>
+      <div class="spacer" />
     </div>
 
-   
-    <div class="flex h-[calc(100%-52px)]">
-   
-      <div class="w-48 bg-gray-50 border-r border-gray-200 p-4">
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Settings
-        </div>
-        <div class="space-y-1">
-          <div class="px-3 py-2 bg-blue-500 text-white rounded-md text-sm font-medium">
-            Desktop
-          </div>
-          <div class="px-3 py-2 text-gray-700 hover:bg-gray-200 rounded-md text-sm cursor-pointer">
-            Screen Saver
-          </div>
+    <div class="settings-content">
+      <!-- Sidebar navigation -->
+      <div class="sidebar">
+        <div class="sidebar-label">Settings</div>
+        <div class="sidebar-items">
+          <div class="sidebar-item active">Desktop</div>
+          <div class="sidebar-item">Screen Saver</div>
         </div>
       </div>
 
-      <!-- Main Content -->
-      <div class="flex-1 p-6 overflow-y-auto">
-        <div class="mb-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-2">Choose Your Desktop Picture</h2>
-          <p class="text-sm text-gray-600">Select a wallpaper from the options below</p>
+      <!-- Main content area -->
+      <div class="main-content">
+        <div class="content-header">
+          <h2>Choose Your Desktop Picture</h2>
+          <p>Select a wallpaper from the options below</p>
         </div>
 
-        <div class="grid grid-cols-3 gap-4">
+        <!-- Wallpaper grid with selection -->
+        <div class="wallpaper-grid">
           {#each wallpapers as wallpaper, index}
             <div
               on:click={() => selectWallpaper(index)}
               on:keypress={(e) => e.key === 'Enter' && selectWallpaper(index)}
               role="button"
               tabindex="0"
-              class="relative cursor-pointer rounded-lg overflow-hidden transition-all duration-200 {selectedWallpaper === index ? 'ring-4 ring-blue-500 shadow-lg scale-105' : 'hover:scale-102 hover:shadow-md'}"
+              class="wallpaper-item {selectedWallpaper === index ? 'selected' : ''}"
             >
-              <img
-                src={wallpaper.image}
-                alt={wallpaper.name}
-                class="w-full h-40 object-cover"
-              />
-              <div class="absolute inset-0 border-2 rounded-lg pointer-events-none {selectedWallpaper === index ? 'border-blue-500' : 'border-transparent'}" />
+              <img src={wallpaper.image} alt={wallpaper.name} />
               {#if selectedWallpaper === index}
-                <div class="absolute top-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div class="checkmark">
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="white">
                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                   </svg>
                 </div>
               {/if}
-              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                <p class="text-white text-xs font-medium">{wallpaper.name}</p>
+              <div class="wallpaper-label">
+                <p>{wallpaper.name}</p>
               </div>
             </div>
           {/each}
         </div>
 
-        <div class="mt-8 pt-6 border-t border-gray-200">
-          <div class="flex items-center justify-between mb-4">
-            <label class="text-sm text-gray-700">Change picture:</label>
-            <select class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+        <!-- Additional settings options -->
+        <div class="settings-options">
+          <div class="option-row">
+            <label>Change picture:</label>
+            <select>
               <option>Never</option>
               <option>Every 5 seconds</option>
               <option>Every minute</option>
-              <option>Every 5 minutes</option>
               <option>Every hour</option>
-              <option>Every day</option>
             </select>
           </div>
-          <label class="flex items-center text-sm text-gray-700">
-            <input type="checkbox" class="mr-2 rounded" />
+          <label class="checkbox-label">
+            <input type="checkbox" />
             Random order
           </label>
         </div>
@@ -137,8 +101,191 @@
     </div>
   </div>
 </div>
-{/if}
 
 <style>
-  @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+  /* Overlay without blur effect */
+  .settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .settings-window {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(40px);
+    border-radius: 12px;
+    box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);
+    overflow: hidden;
+    width: 900px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  /* Maximized state - fills viewport */
+  .settings-window.maximized {
+    width: calc(100vw - 60px);
+    height: calc(100vh - 60px);
+  }
+
+  .window-header {
+    background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
+    border-bottom: 1px solid #d1d1d1;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .window-controls { display: flex; gap: 8px; }
+  
+  /* macOS-style window controls */
+  .control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .control:hover { opacity: 0.8; }
+  .control.close { background: #ff5f57; }
+  .control.minimize { background: #febc2e; }
+  .control.maximize { background: #28c840; }
+  .window-title { font-size: 14px; font-weight: 600; color: #333; }
+  .spacer { width: 64px; }
+  
+  .settings-content { display: flex; flex: 1; overflow: hidden; }
+  
+  /* Sidebar styling */
+  .sidebar {
+    width: 192px;
+    background: #f5f5f5;
+    border-right: 1px solid #d1d1d1;
+    padding: 16px;
+  }
+
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .sidebar-items { display: flex; flex-direction: column; gap: 4px; }
+  
+  .sidebar-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .sidebar-item:hover { background: #e0e0e0; }
+  .sidebar-item.active { background: #007aff; color: white; font-weight: 500; }
+  
+  .main-content { flex: 1; padding: 24px; overflow-y: auto; }
+  .content-header { margin-bottom: 24px; }
+  .content-header h2 { font-size: 20px; font-weight: 600; color: #1d1d1f; margin: 0 0 8px 0; }
+  .content-header p { font-size: 13px; color: #666; margin: 0; }
+  
+  /* Wallpaper grid - responsive */
+  .wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .wallpaper-item {
+    position: relative;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 3px solid transparent;
+  }
+
+  .wallpaper-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Selected wallpaper highlighting */
+  .wallpaper-item.selected {
+    border-color: #007aff;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+  }
+
+  .wallpaper-item img { width: 100%; height: 160px; object-fit: cover; display: block; }
+  
+  /* Checkmark indicator for selected wallpaper */
+  .checkmark {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: #007aff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .wallpaper-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    padding: 8px;
+  }
+
+  .wallpaper-label p { color: white; font-size: 12px; font-weight: 500; margin: 0; }
+  .settings-options { padding-top: 24px; border-top: 1px solid #d1d1d1; }
+  
+  .option-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .option-row label { font-size: 13px; color: #333; }
+  
+  .option-row select {
+    padding: 6px 12px;
+    border: 1px solid #d1d1d1;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    cursor: pointer;
+  }
+
+  .checkbox-label { display: flex; align-items: center; font-size: 13px; color: #333; cursor: pointer; }
+  .checkbox-label input { margin-right: 8px; cursor: pointer; }
+  
+  /* Scrollbar styling */
+  .main-content::-webkit-scrollbar { width: 8px; }
+  .main-content::-webkit-scrollbar-track { background: transparent; }
+  .main-content::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+  .main-content::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
 </style>

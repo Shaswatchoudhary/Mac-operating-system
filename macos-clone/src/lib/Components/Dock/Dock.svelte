@@ -1,48 +1,104 @@
 <script>
-import FinderIcon from '$lib/assets/static/Finder.png';
-import LaunchpadIcon from '$lib/assets/static/launchpad.png';
-import PhotosIcon from '$lib/assets/static/photos.png';
-import CalculatorIcon from '$lib/assets/static/calculator.png';
-import CalendarIcon from '$lib/assets/static/calendar.png';
-import VSCodeIcon from '$lib/assets/static/vscode.png';
-import AppstoreIcon from '$lib/assets/static/Appstore.png';
-import FoxIcon from '$lib/assets/static/fox.png';
-import WallpaperIcon from '$lib/assets/static/wallpaper.png';
+  import FinderIcon from '$lib/assets/static/Finder.png';
+  import LaunchpadIcon from '$lib/assets/static/launchpad.png';
+  import PhotosIcon from '$lib/assets/static/photos.png';
+  import CalculatorIcon from '$lib/assets/static/calculator.png';
+  import CalendarIcon from '$lib/assets/static/calendar.png';
+  import VSCodeIcon from '$lib/assets/static/vscode.png';
+  import AppstoreIcon from '$lib/assets/static/Appstore.png';
+  import FoxIcon from '$lib/assets/static/fox.png';
+  import WallpaperIcon from '$lib/assets/static/wallpaper.png';
 
-import WallpaperApp from "../wallpaper/wallpaper.svelte";
+  import PortfolioApp from "../Portfolio/PortfolioApp.svelte";
+  import CalculatorApp from "../Calculator/calculator.svelte"; 
+  import PhotosApp from "../Photos/photos.svelte"; 
+  import CalendarApp from "../Calendar/Calendar.svelte"; 
+  import VSCodeApp from "../VSCode/VSCode.svelte";
+  import AppstoreApp from "../Appstore/Appstore.svelte";
+  import WallpaperApp from "../Wallpaper/wallpaper.svelte";
+  import LaunchpadApp from "../launchpad/launchpad.svelte";
+  import FinderApp from "../Finder/Finder.svelte";
 
-let apps = [
-  { name: "Finder", icon: FinderIcon, active: true },
-  { name: "Launchpad", icon: LaunchpadIcon },
-  { name: "Photos", icon: PhotosIcon },
-  { name: "Calculator", icon: CalculatorIcon, active: true }, 
-  { name: "Calendar", icon: CalendarIcon, active: true },
-  { name: "VS Code", icon: VSCodeIcon },
-  { name: "App Store", icon: AppstoreIcon },
-  { name: "Portfolio", icon: FoxIcon },
-  { name: "Wallpaper", icon: WallpaperIcon },
-];
-
-let hoveredIndex = -1;
+  let apps = [
+    { name: "Finder", icon: FinderIcon },
+    { name: "Launchpad", icon: LaunchpadIcon },
+    { name: "Photos", icon: PhotosIcon },
+    { name: "Calculator", icon: CalculatorIcon },
+    { name: "Calendar", icon: CalendarIcon },
+    { name: "VS Code", icon: VSCodeIcon },
+    { name: "App Store", icon: AppstoreIcon },
+    { name: "Portfolio", icon: FoxIcon }, 
+    { name: "Wallpaper", icon: WallpaperIcon }, 
+  ];
+// <!-- we are using this to open the apps -->
+  let hoveredIndex = -1;
+  let openPortfolio = false;
+  let portfolioKey = 0;
+  let openCalculator = false;
+  let calculatorKey = 0;
+  let openPhotos = false; 
+  let photosKey = 0; 
+  let openCalendar = false;
+let calendarKey = 0;
+let openVSCode = false;
+let vscodeKey = 0;
+let openAppstore = false;
+let appstoreKey = 0;
 let openWallpaper = false;
-let wallpaperKey = 0; 
+let wallpaperKey = 0;
+let openFinder = false;
+let finderKey = 0;
+let openLaunchpad = false;
+let launchpadKey = 0;
 
-function getScale(i) { 
-  const dist = Math.abs(i - hoveredIndex);
-  if (dist === 0) return 1.6;
-  if (dist === 1) return 1.3;
-  if (dist === 2) return 1.1;
-  return 1.0;
+
+  function getScale(i) {
+    const dist = Math.abs(i - hoveredIndex);
+    if (dist === 0) return 1.6;
+    if (dist === 1) return 1.3;
+    if (dist === 2) return 1.1;
+    return 1.0;
+  }
+//function to open the apps
+  function handleAppClick(app) {
+    if (app.name === "Portfolio") {
+      openPortfolio = true;
+      portfolioKey += 1;
+    } else if (app.name === "Calculator") {
+      openCalculator = true;
+      calculatorKey += 1;
+    } else if (app.name === "Photos") { // Add this
+      openPhotos = true;
+      photosKey += 1;
+    }
+    else if (app.name === "Calendar") {
+  openCalendar = true;
+  calendarKey += 1;
 }
-
-// function handleAppClick(app) {
-//   if (app.name === "Wallpaper") {
-//     openWallpaper = true;
-//     wallpaperKey += 1; // ✅ force remount each time clicked
-//   }
-// }
+else if (app.name === "VS Code") {
+  openVSCode = true;
+  vscodeKey += 1;
+}
+else if (app.name === "App Store") {
+  openAppstore = true;
+  appstoreKey += 1;
+}
+else if (app.name === "Wallpaper") {
+  openWallpaper = true;
+  wallpaperKey += 1;
+}
+else if (app.name === "Finder") {
+  openFinder = true;
+  finderKey += 1;
+}
+else if (app.name === "Launchpad") {
+  openLaunchpad = true;
+  launchpadKey += 1;
+}
+  }
 </script>
 
+<!-- 🧭 Dock Container -->
 <div
   class="fixed bottom-8 left-1/2 -translate-x-1/2
          flex items-end gap-5 px-8 py-4
@@ -53,7 +109,6 @@ function getScale(i) {
   style="min-width: 850px;"
   role="menubar"
 >
-<!-- Dock -->
   {#each apps as app, i}
     <button
       type="button"
@@ -62,7 +117,7 @@ function getScale(i) {
       on:blur={() => (hoveredIndex = -1)}
       on:mouseenter={() => (hoveredIndex = i)}
       on:mouseleave={() => (hoveredIndex = -1)}
-      on:click={() => handleAppClick(app)} 
+      on:click={() => handleAppClick(app)}
       style="outline: none;"
       role="menuitem"
       aria-label={app.name}
@@ -75,7 +130,6 @@ function getScale(i) {
                  transition-opacity duration-200 whitespace-nowrap z-10"
         >
           {app.name}
-          <!-- hover effect using this can see the names of the dock app  -->
         </div>
       {/if}
 
@@ -85,13 +139,8 @@ function getScale(i) {
         draggable="false"
         class="w-14 h-14 rounded-xl transition-transform duration-200"
         style="transform: scale({getScale(i)});"
-      /> 
-      <!-- this is the active app indicator -->
-      {#if app.active}
-        <div class="absolute left-1/2 -translate-x-1/2 -bottom-1 w-1.5 h-1.5 bg-white/90 rounded-full"></div>
-      {/if}
+      />
     </button>
-    <!-- this is the separator means |  the line between the docks apps-->
 
     {#if i === 1 || i === 6}
       <div class="flex items-center self-center">
@@ -99,18 +148,71 @@ function getScale(i) {
       </div>
     {/if}
   {/each}
-  <!-- this uses to showcase the app in the dock (visible it )-->
 </div>
-<!-- whenever wallpaperKey changes, remounts correctly on each click -->
-<!-- {#if openWallpaper}
+
+<!-- opens Portfolio app when clicked -->
+{#if openPortfolio}
+  {#key portfolioKey}
+    <PortfolioApp onClose={() => (openPortfolio = false)} />
+  {/key}
+{/if}
+
+<!-- opens Calculator app when clicked -->
+{#if openCalculator}
+  {#key calculatorKey}
+    <CalculatorApp onClose={() => (openCalculator = false)} />
+  {/key}
+{/if}
+
+<!-- opens Photos app when clicked -->
+{#if openPhotos}
+  {#key photosKey}
+    <PhotosApp onClose={() => (openPhotos = false)} />
+  {/key}
+{/if}
+
+<!-- opens Calendar app when clicked -->
+{#if openCalendar}
+  {#key calendarKey}
+    <CalendarApp onClose={() => (openCalendar = false)} />
+  {/key}
+{/if}
+
+<!-- opens VS Code app when clicked -->
+{#if openVSCode}
+  {#key vscodeKey}
+    <VSCodeApp onClose={() => (openVSCode = false)} />
+  {/key}
+{/if}
+
+<!-- opens App Store app when clicked -->
+{#if openAppstore}
+  {#key appstoreKey}
+    <AppstoreApp onClose={() => (openAppstore = false)} />
+  {/key}
+{/if}
+
+<!-- opens Wallpaper app when clicked -->
+{#if openWallpaper}
   {#key wallpaperKey}
     <WallpaperApp onClose={() => (openWallpaper = false)} />
   {/key}
-{/if} 
-becz of this the extra layer is doing problem so we hav to check for this 
---> 
+{/if}
 
-<style> 
+<!-- opens finder app when clicked -->
+{#if openFinder}
+  {#key finderKey}
+    <FinderApp onClose={() => (openFinder = false)} />
+  {/key}
+{/if}
+
+<!-- opens launchpad app when clicked -->
+{#if openLaunchpad}
+  {#key launchpadKey}
+    <LaunchpadApp onClose={() => (openLaunchpad = false)} />
+  {/key}
+{/if}
+<style>
   img {
     transition: transform 0.2s ease-out;
     will-change: transform;
@@ -120,6 +222,6 @@ becz of this the extra layer is doing problem so we hav to check for this
   }
 
   .backdrop-blur-2xl {
-    backdrop-filter: blur(40px); 
+    backdrop-filter: blur(40px);
   }
 </style>
