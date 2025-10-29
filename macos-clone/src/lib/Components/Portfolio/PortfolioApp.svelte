@@ -10,83 +10,85 @@
   let scene, camera, renderer, controls, model;
   let isVisible = true;
   let isFullscreen = false;
-  let blackHole; // Black hole mesh
+  
+  // Current view state
+  let currentView = 'landing'; // 'landing', 'about', 'skills', 'projects', 'contact'
   
   // Animation states
   let showName = false;
-  let showTitle = false;
-  let isTransitioning = false;
-  let currentSection = 'home'; // 'home', 'about', 'skills', 'projects', 'contact'
+  let showSubtitle = false;
+  let showButtons = false;
   
-  // Your portfolio data from resume
+  // Your data
   const portfolio = {
     name: "SHASWAT CHOUDHARY",
-    title: "Mobile & Web Developer | React Native Expert",
-    location: "Kolhapur, India",
-    email: "kaushikchoudhary33@icloud.com",
-    phone: "+91 95794 99891",
-    linkedin: "linkedin.com/in/shaswatchoudhary",
-    github: "github.com/Shaswatchoudhary",
-    youtube: "youtube.com/@Shaswatchoudhary21",
+    role: "Mobile & Web Developer",
+    tagline: "Crafting Digital Experiences",
     
-    about: "Final-year Computer Science Engineering student skilled in React Native, JavaScript, and the MERN stack. With 4 years of coding experience, I build cross-platform mobile and web applications. Passionate about mobile-first development, problem-solving, and sharing tech content on YouTube.",
-    
-    education: {
-      degree: "B.Tech in Computer Science & Engineering",
-      institution: "Ashokrao Mane Group of Institutions, Kolhapur",
-      duration: "June 2022 - June 2026 (Expected)",
-      cgpa: "7.1"
+    about: {
+      intro: "Final-year Computer Science student specializing in cross-platform mobile and web development with 4 years of coding experience.",
+      passion: "Passionate about mobile-first development, 3D design, and sharing tech knowledge through YouTube tutorials.",
+      education: "B.Tech in Computer Science • Ashokrao Mane Group of Institutions • CGPA: 7.1 • 2022-2026"
     },
     
-    skills: {
-      languages: ["JavaScript", "C++"],
-      webMobile: ["React.js", "React Native", "Node.js", "Next.js", "SaaS"],
-      databases: ["MongoDB", "Supabase"],
-      tools: ["Git", "GitHub"],
-      core: ["Communication", "Leadership", "Problem Solving", "DSA (Learning)"]
-    },
-    
-    certifications: [
-      { name: "JavaScript", provider: "Udemy", date: "May 2024" },
-      { name: "React JS", provider: "Great Learning", date: "October 2024" },
-      { name: "MongoDB Certified", provider: "MongoDB University", date: "January 2025" }
+    skills: [
+      { category: "Languages", items: ["JavaScript", "C++"] },
+      { category: "Frontend", items: ["React.js", "React Native", "Next.js", "Svelte"] },
+      { category: "Backend", items: ["Node.js", "Express"] },
+      { category: "Database", items: ["MongoDB", "Supabase"] },
+      { category: "Creative", items: ["3D Modeling", "Blender", "Video Editing"] },
+      { category: "Content", items: ["YouTube Creator", "Tech Tutorials"] },
+      { category: "Tools", items: ["Git", "GitHub", "VS Code"] }
     ],
     
     projects: [
       {
-        name: "WhatsApp-like Chat Application",
-        tech: "MERN Stack, Socket.io",
-        description: "Real-time chat with private messaging, group chats, and seamless communication"
+        title: "WhatsApp Clone",
+        tech: "MERN Stack • Socket.io",
+        desc: "Real-time chat application with private messaging, group chats, and seamless communication using WebSockets.",
+        year: "2024",
+        github: "https://github.com/Shaswatchoudhary"
       },
       {
-        name: "Music Streaming App",
-        tech: "React Native, Node.js",
-        description: "Cross-platform music app with playlist creation, media controls, and user authentication"
+        title: "Music Streaming App",
+        tech: "React Native • Node.js",
+        desc: "Cross-platform music app with playlist creation, media controls, and user authentication.",
+        year: "2024",
+        github: "https://github.com/Shaswatchoudhary"
       },
       {
-        name: "Receipt Scanner App",
-        tech: "React Native, OCR",
-        description: "Mobile app to scan receipts, extract text, and track expenses with intuitive UI"
+        title: "Receipt Scanner",
+        tech: "React Native • OCR",
+        desc: "Mobile app to scan receipts, extract text using OCR, and track expenses with intuitive UI.",
+        year: "2024",
+        github: "https://github.com/Shaswatchoudhary"
       },
       {
-        name: "Clock App",
+        title: "Clock App",
         tech: "React Native",
-        description: "Functional clock with dynamic time updates and customizable themes for Android"
+        desc: "Functional clock application with dynamic time updates and customizable themes for Android.",
+        year: "2024",
+        github: "https://github.com/Shaswatchoudhary"
       }
     ],
     
-    hobbies: [
-      "Creating tech tutorials on YouTube",
-      "Building experimental projects",
-      "Playing strategic games"
-    ]
+    contact: {
+      email: "kaushikchoudhary33@icloud.com",
+      phone: "+91 95794 99891",
+      location: "Kolhapur, India",
+      links: [
+        { label: "GitHub", url: "https://github.com/Shaswatchoudhary", icon: "github" },
+        { label: "LinkedIn", url: "https://linkedin.com/in/shaswatchoudhary", icon: "linkedin" },
+        { label: "YouTube", url: "https://youtube.com/@Shaswatchoudhary21", icon: "youtube" }
+      ]
+    }
   };
   
-  // Trigger name animation after mount
-  setTimeout(() => { showName = true; }, 500);
-  setTimeout(() => { showTitle = true; }, 1200);
+  // Trigger animations
+  setTimeout(() => { showName = true; }, 800);
+  setTimeout(() => { showSubtitle = true; }, 1400);
+  setTimeout(() => { showButtons = true; }, 2000);
   
-  // Toggle fullscreen
   const toggleFullscreen = () => {
     isFullscreen = !isFullscreen;
     if (renderer && camera) {
@@ -96,93 +98,41 @@
     }
   };
   
-  // Black hole transition animation
-  const triggerBlackHoleTransition = (targetSection) => {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    
-    // Animate black hole growing and camera zooming
-    const duration = 2000;
-    const startTime = Date.now();
-    const startScale = blackHole.scale.x;
-    const targetScale = 100;
-    const startZ = camera.position.z;
-    const targetZ = -10;
-    
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-      
-      // Grow black hole
-      const scale = startScale + (targetScale - startScale) * eased;
-      blackHole.scale.set(scale, scale, scale);
-      
-      // Zoom camera into black hole
-      camera.position.z = startZ + (targetZ - startZ) * eased;
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        // Transition complete - show new section
-        currentSection = targetSection;
-        resetBlackHole();
-        isTransitioning = false;
-      }
-    };
-    animate();
-  };
-  
-  // Reset black hole to original state
-  const resetBlackHole = () => {
-    blackHole.scale.set(2, 2, 2);
-    camera.position.z = 4;
-  };
-  
-  // Navigate between sections
-  const navigateTo = (section) => {
-    if (section === 'home') {
-      currentSection = 'home';
-      resetBlackHole();
+  // Navigate to section with fade transition
+  const navigateToSection = (section) => {
+    currentView = section;
+    if (section === 'landing') {
+      controls.autoRotate = true;
     } else {
-      triggerBlackHoleTransition(section);
+      controls.autoRotate = false;
     }
   };
   
-  // Create animated black hole
-  const createBlackHole = () => {
-    const geometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x8800ff,
-      emissive: 0x4400aa,
-      emissiveIntensity: 0.5,
-      metalness: 0.8,
-      roughness: 0.2
-    });
-    blackHole = new THREE.Mesh(geometry, material);
-    blackHole.position.set(0, -5, -5);
-    blackHole.scale.set(2, 2, 2);
-    scene.add(blackHole);
-  };
-  
-  // Create starfield
-  const createStarfield = () => {
+  // Create minimal particle field
+  const createParticles = () => {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
-    for (let i = 0; i < 3000; i++) {
+    
+    for (let i = 0; i < 1000; i++) {
       vertices.push(
-        (Math.random() - 0.5) * 300,
-        (Math.random() - 0.5) * 300,
-        (Math.random() - 0.5) * 300
+        (Math.random() - 0.5) * 200,
+        (Math.random() - 0.5) * 200,
+        (Math.random() - 0.5) * 200
       );
     }
+    
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    const material = new THREE.PointsMaterial({ color: 0xffffff, size: 1.5 });
-    const stars = new THREE.Points(geometry, material);
-    scene.add(stars);
+    const material = new THREE.PointsMaterial({ 
+      color: 0x888888, 
+      size: 1.5,
+      transparent: true,
+      opacity: 0.6
+    });
+    
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
   };
   
-  // Helper functions
   function getAspectRatio() {
     return isFullscreen ? window.innerWidth / window.innerHeight : 800 / 600;
   }
@@ -196,31 +146,24 @@
   }
   
   onMount(() => {
-    // Initialize Three.js
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    scene.background = new THREE.Color(0x0a0a0a);
     
-    camera = new THREE.PerspectiveCamera(45, getAspectRatio(), 0.1, 1000);
-    camera.position.set(0, 0, 4);
+    camera = new THREE.PerspectiveCamera(50, getAspectRatio(), 0.1, 1000);
+    camera.position.set(0, 0, 5);
     
     renderer = new THREE.WebGLRenderer({ antialias: true });
     updateRendererSize();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     canvasContainer.appendChild(renderer.domElement);
     
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const light = new THREE.DirectionalLight(0xffffff, 1.2);
+    // Minimal lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(3, 4, 5);
     scene.add(light);
     
-    const pointLight = new THREE.PointLight(0x8800ff, 1, 50);
-    pointLight.position.set(0, -5, -5);
-    scene.add(pointLight);
-    
-    // Create scene
-    createStarfield();
-    createBlackHole();
+    createParticles();
     
     // Load character model
     const loader = new GLTFLoader();
@@ -229,11 +172,10 @@
       (gltf) => {
         model = gltf.scene;
         
-        // Scale and position model
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-        const scale = 2.5 / Math.max(size.x, size.y, size.z);
+        const scale = 3 / Math.max(size.x, size.y, size.z);
         
         model.scale.setScalar(scale);
         model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
@@ -247,9 +189,9 @@
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = true;
     controls.enablePan = false;
-    controls.autoRotate = currentSection === 'home';
-    controls.autoRotateSpeed = 0.8;
-    controls.minDistance = 2;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1;
+    controls.minDistance = 3;
     controls.maxDistance = 8;
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -262,32 +204,16 @@
       
       const elapsed = clock.elapsedTime;
       
-      // Floating model animation
-      if (model && currentSection === 'home') {
-        model.position.y = Math.sin(elapsed * 0.8) * 0.08;
+      // Gentle floating
+      if (model) {
+        model.position.y = Math.sin(elapsed * 0.5) * 0.1;
       }
       
-      // Rotating black hole
-      if (blackHole) {
-        blackHole.rotation.x = elapsed * 0.3;
-        blackHole.rotation.y = elapsed * 0.5;
-      }
-      
-      controls.autoRotate = currentSection === 'home';
       controls.update();
       renderer.render(scene, camera);
     };
     animate();
     
-    // Mouse wheel scroll to trigger black hole
-    const handleWheel = (e) => {
-      if (currentSection === 'home' && e.deltaY > 0 && !isTransitioning) {
-        triggerBlackHoleTransition('about');
-      }
-    };
-    renderer.domElement.addEventListener('wheel', handleWheel);
-    
-    // Window resize
     const handleResize = () => {
       if (!isVisible) return;
       camera.aspect = getAspectRatio();
@@ -298,11 +224,14 @@
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      renderer.domElement.removeEventListener('wheel', handleWheel);
       if (renderer) renderer.dispose();
     };
   });
 </script>
+
+<svelte:head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</svelte:head>
 
 {#if isVisible}
 <div class="portfolio-app {isFullscreen ? 'fullscreen' : ''}">
@@ -318,96 +247,145 @@
   
   <!-- Content overlay -->
   <div class="content-overlay">
-    {#if currentSection === 'home'}
-      <div class="home-section">
-        <h1 class="name {showName ? 'show' : ''}">{portfolio.name}</h1>
-        <p class="title {showTitle ? 'show' : ''}">{portfolio.title}</p>
-        <div class="scroll-hint {showTitle ? 'show' : ''}">
-          <span>SCROLL TO ENTER THE VOID</span>
-          <div class="arrow">↓</div>
+    {#if currentView === 'landing'}
+      <!-- LANDING PAGE -->
+      <div class="landing-page">
+        <div class="name-block {showName ? 'show' : ''}">
+          {portfolio.name}
+        </div>
+        
+        <div class="subtitle-block {showSubtitle ? 'show' : ''}">
+          <div class="role">{portfolio.role}</div>
+          <div class="tagline">{portfolio.tagline}</div>
+        </div>
+        
+        <div class="nav-buttons {showButtons ? 'show' : ''}">
+          <button class="nav-btn" on:click={() => navigateToSection('about')}>About</button>
+          <button class="nav-btn" on:click={() => navigateToSection('skills')}>Skills</button>
+          <button class="nav-btn" on:click={() => navigateToSection('projects')}>Projects</button>
+          <button class="nav-btn" on:click={() => navigateToSection('contact')}>Contact</button>
         </div>
       </div>
-    {:else if currentSection === 'about'}
-      <div class="section-content">
-        <h2>About Me</h2>
-        <p>{portfolio.about}</p>
-        <div class="info-grid">
-          <div class="info-item">📍 {portfolio.location}</div>
-          <div class="info-item">📧 {portfolio.email}</div>
-          <div class="info-item">📱 {portfolio.phone}</div>
-        </div>
-        <div class="nav-buttons">
-          <button on:click={() => navigateTo('home')}>← Home</button>
-          <button on:click={() => navigateTo('skills')}>Skills →</button>
+      
+    {:else if currentView === 'about'}
+      <!-- ABOUT PAGE -->
+      <div class="detail-page">
+        <button class="back-btn" on:click={() => navigateToSection('landing')}>← Back</button>
+        
+        <h1 class="page-title">About Me</h1>
+        
+        <div class="content-grid">
+          <div class="content-block">
+            <h3>Introduction</h3>
+            <p>{portfolio.about.intro}</p>
+          </div>
+          
+          <div class="content-block">
+            <h3>Passion</h3>
+            <p>{portfolio.about.passion}</p>
+          </div>
+          
+          <div class="content-block">
+            <h3>Education</h3>
+            <p>{portfolio.about.education}</p>
+          </div>
         </div>
       </div>
-    {:else if currentSection === 'skills'}
-      <div class="section-content">
-        <h2>Skills & Expertise</h2>
-        <div class="skills-category">
-          <h3>Languages</h3>
-          <div class="skills-row">
-            {#each portfolio.skills.languages as skill}
-              <span class="skill-tag">{skill}</span>
-            {/each}
-          </div>
-        </div>
-        <div class="skills-category">
-          <h3>Web & Mobile</h3>
-          <div class="skills-row">
-            {#each portfolio.skills.webMobile as skill}
-              <span class="skill-tag">{skill}</span>
-            {/each}
-          </div>
-        </div>
-        <div class="skills-category">
-          <h3>Databases & Tools</h3>
-          <div class="skills-row">
-            {#each [...portfolio.skills.databases, ...portfolio.skills.tools] as skill}
-              <span class="skill-tag">{skill}</span>
-            {/each}
-          </div>
-        </div>
-        <div class="nav-buttons">
-          <button on:click={() => navigateTo('about')}>← About</button>
-          <button on:click={() => navigateTo('projects')}>Projects →</button>
-        </div>
-      </div>
-    {:else if currentSection === 'projects'}
-      <div class="section-content">
-        <h2>Projects</h2>
-        <div class="projects-grid">
-          {#each portfolio.projects as project}
-            <div class="project-card">
-              <h3>{project.name}</h3>
-              <p class="tech">{project.tech}</p>
-              <p>{project.description}</p>
+      
+    {:else if currentView === 'skills'}
+      <!-- SKILLS PAGE -->
+      <div class="detail-page">
+        <button class="back-btn" on:click={() => navigateToSection('landing')}>← Back</button>
+        
+        <h1 class="page-title">Skills & Expertise</h1>
+        
+        <div class="skills-layout">
+          {#each portfolio.skills as skillGroup}
+            <div class="skill-group">
+              <h3 class="skill-category">{skillGroup.category}</h3>
+              <div class="skill-items">
+                {#each skillGroup.items as skill}
+                  <span class="skill-chip">{skill}</span>
+                {/each}
+              </div>
             </div>
           {/each}
         </div>
-        <div class="nav-buttons">
-          <button on:click={() => navigateTo('skills')}>← Skills</button>
-          <button on:click={() => navigateTo('contact')}>Contact →</button>
-        </div>
       </div>
-    {:else if currentSection === 'contact'}
-      <div class="section-content">
-        <h2>Get In Touch</h2>
-        <div class="contact-links">
-          <a href="https://{portfolio.github}" target="_blank">💻 GitHub</a>
-          <a href="https://{portfolio.linkedin}" target="_blank">💼 LinkedIn</a>
-          <a href="https://{portfolio.youtube}" target="_blank">🎥 YouTube</a>
-          <a href="mailto:{portfolio.email}">📧 Email</a>
-        </div>
-        <div class="hobbies">
-          <h3>Interests</h3>
-          {#each portfolio.hobbies as hobby}
-            <p>• {hobby}</p>
+      
+    {:else if currentView === 'projects'}
+      <!-- PROJECTS PAGE -->
+      <div class="detail-page">
+        <button class="back-btn" on:click={() => navigateToSection('landing')}>← Back</button>
+        
+        <h1 class="page-title">Projects</h1>
+        
+        <div class="projects-grid">
+          {#each portfolio.projects as project}
+            <div class="project-card">
+              <div class="project-header">
+                <h3>{project.title}</h3>
+                <div class="project-links">
+                  <span class="project-year">{project.year}</span>
+                  <a href={project.github} target="_blank" class="github-link" title="View on GitHub">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              <p class="project-tech">{project.tech}</p>
+              <p class="project-desc">{project.desc}</p>
+            </div>
           {/each}
         </div>
-        <div class="nav-buttons">
-          <button on:click={() => navigateTo('projects')}>← Projects</button>
-          <button on:click={() => navigateTo('home')}>Home →</button>
+      </div>
+      
+    {:else if currentView === 'contact'}
+      <!-- CONTACT PAGE -->
+      <div class="detail-page">
+        <button class="back-btn" on:click={() => navigateToSection('landing')}>← Back</button>
+        
+        <h1 class="page-title">Get In Touch</h1>
+        
+        <div class="contact-layout">
+          <div class="contact-info">
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <a href="mailto:{portfolio.contact.email}">{portfolio.contact.email}</a>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <a href="tel:{portfolio.contact.phone}">{portfolio.contact.phone}</a>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Location</span>
+              <span>{portfolio.contact.location}</span>
+            </div>
+          </div>
+          
+          <div class="social-links">
+            {#each portfolio.contact.links as link}
+              <a href={link.url} target="_blank" class="social-link">
+                <span class="link-icon">
+                  {#if link.icon === 'github'}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  {:else if link.icon === 'linkedin'}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                  {:else if link.icon === 'youtube'}
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                    </svg>
+                  {/if}
+                </span>
+                <span class="link-label">{link.label}</span>
+              </a>
+            {/each}
+          </div>
         </div>
       </div>
     {/if}
@@ -421,9 +399,9 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #000;
+    background: #0a0a0a;
     border-radius: 12px;
-    box-shadow: 0 25px 80px rgba(136, 0, 255, 0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     overflow: hidden;
     width: 800px;
     height: 600px;
@@ -447,7 +425,7 @@
     display: flex;
     gap: 8px;
     z-index: 30;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(20px);
     padding: 6px;
     border-radius: 8px;
@@ -482,217 +460,378 @@
     pointer-events: none;
   }
   
-  /* Home section with animated name */
-  .home-section {
+  /* === LANDING PAGE === */
+  .landing-page {
     text-align: center;
     pointer-events: none;
+    padding: 40px;
   }
   
-  .name {
+  .name-block {
+    font-family: 'Syne', sans-serif;
     font-size: 3.5rem;
-    font-weight: 900;
-    background: linear-gradient(45deg, #fff, #8800ff, #00ffff);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradientFlow 3s ease infinite;
-    letter-spacing: 4px;
-    opacity: 0;
-    transform: translateY(50px) scale(0.8);
-    transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    text-shadow: 0 0 40px rgba(136, 0, 255, 0.8);
-  }
-  
-  .name.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  
-  .title {
-    font-size: 1.4rem;
-    color: #8800ff;
-    font-weight: 600;
-    margin-top: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
     opacity: 0;
     transform: translateY(30px);
-    transition: all 1s ease 0.5s;
-    text-shadow: 0 0 20px rgba(136, 0, 255, 0.5);
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .title.show {
+  .name-block.show {
     opacity: 1;
     transform: translateY(0);
   }
   
-  .scroll-hint {
-    margin-top: 50px;
-    color: #8800ff;
-    font-size: 0.9rem;
-    letter-spacing: 3px;
+  .subtitle-block {
+    margin-bottom: 50px;
     opacity: 0;
-    transition: opacity 1s ease 1s;
+    transform: translateY(20px);
+    transition: all 1s ease 0.3s;
   }
   
-  .scroll-hint.show { opacity: 1; }
-  
-  .arrow {
-    font-size: 2rem;
-    animation: bounce 2s infinite;
-    margin-top: 10px;
+  .subtitle-block.show {
+    opacity: 1;
+    transform: translateY(0);
   }
   
-  /* Section content */
-  .section-content {
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(30px);
-    padding: 40px;
-    border-radius: 20px;
-    border: 2px solid rgba(136, 0, 255, 0.3);
-    max-width: 700px;
-    max-height: 80vh;
-    overflow-y: auto;
-    pointer-events: auto;
-    box-shadow: 0 0 60px rgba(136, 0, 255, 0.4);
-  }
-  
-  .section-content h2 {
-    font-size: 2.5rem;
-    color: #8800ff;
-    margin-bottom: 20px;
-    text-shadow: 0 0 20px rgba(136, 0, 255, 0.8);
-  }
-  
-  .section-content h3 {
+  .role {
+    font-family: 'Inter', sans-serif;
     font-size: 1.3rem;
-    color: #00ffff;
-    margin: 20px 0 10px;
+    font-weight: 600;
+    color: #888;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
   }
   
-  .section-content p { color: #fff; font-size: 1.05rem; line-height: 1.7; margin-bottom: 15px; }
-  
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin: 20px 0;
+  .tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    color: #666;
+    letter-spacing: 2px;
   }
   
-  .info-item {
-    background: rgba(136, 0, 255, 0.15);
-    padding: 12px;
-    border-radius: 8px;
+  .nav-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease 0.6s;
+    pointer-events: auto;
+  }
+  
+  .nav-buttons.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .nav-btn {
+    font-family: 'Inter', sans-serif;
+    padding: 14px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
-    border: 1px solid rgba(136, 0, 255, 0.3);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.5px;
   }
   
-  .skills-category { margin-bottom: 25px; }
+  .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+  }
   
-  .skills-row {
+  /* === DETAIL PAGES === */
+  .detail-page {
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 40px;
+    pointer-events: auto;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .back-btn {
+    font-family: 'Inter', sans-serif;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #888;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 30px;
+  }
+  
+  .back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+  }
+  
+  /* About page */
+  .content-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .content-block h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+  
+  .content-block p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 300;
+  }
+  
+  /* Skills page */
+  .skills-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+  }
+  
+  .skill-group {
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .skill-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+  }
+  
+  .skill-items {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
   
-  .skill-tag {
-    background: rgba(136, 0, 255, 0.2);
+  .skill-chip {
+    font-family: 'Inter', sans-serif;
     padding: 8px 16px;
-    border-radius: 20px;
-    color: #00ffff;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
     font-size: 0.9rem;
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s;
   }
   
+  .skill-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  /* Projects page */
   .projects-grid {
     display: grid;
-    gap: 20px;
-    margin: 20px 0;
+    gap: 25px;
   }
   
   .project-card {
-    background: rgba(136, 0, 255, 0.1);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(136, 0, 255, 0.3);
-  }
-  
-  .project-card h3 { color: #00ffff; margin-bottom: 8px; font-size: 1.3rem; }
-  .project-card .tech { color: #8800ff; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600; }
-  
-  .contact-links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin: 25px 0;
-  }
-  
-  .contact-links a {
-    background: rgba(136, 0, 255, 0.2);
-    padding: 15px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    color: #00ffff;
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid rgba(0, 255, 255, 0.3);
     transition: all 0.3s;
-    text-align: center;
   }
   
-  .contact-links a:hover {
-    background: rgba(136, 0, 255, 0.4);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(136, 0, 255, 0.5);
+  .project-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
   }
   
-  .hobbies { margin-top: 25px; }
-  .hobbies p { color: #00ffff; margin: 8px 0; }
-  
-  .nav-buttons {
+  .project-header {
     display: flex;
-    gap: 15px;
-    margin-top: 30px;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
   
-  .nav-buttons button {
-    background: rgba(136, 0, 255, 0.3);
-    border: 2px solid #8800ff;
+  .project-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .project-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
     color: #fff;
-    padding: 12px 30px;
-    border-radius: 25px;
-    cursor: pointer;
+  }
+  
+  .github-link {
+    color: #888;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+  }
+  
+  .github-link:hover {
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  
+  .github-link svg {
+    display: block;
+  }
+  
+  .project-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .project-tech {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  
+  .project-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+  }
+  
+  /* Contact page */
+  .contact-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .info-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .info-item a, .info-item span {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .info-item a:hover {
+    color: #888;
+  }
+  
+  .social-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  
+  .social-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  .link-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  
+  .link-icon svg {
+    display: block;
+  }
+  
+  .link-label {
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     font-weight: 600;
-    transition: all 0.3s;
-  }
-  
-  .nav-buttons button:hover {
-    background: rgba(136, 0, 255, 0.6);
-    transform: scale(1.05);
-    box-shadow: 0 5px 25px rgba(136, 0, 255, 0.6);
-  }
-  
-  /* Animations */
-  @keyframes gradientFlow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-15px); }
-    60% { transform: translateY(-8px); }
+    color: #fff;
   }
   
   /* Scrollbar */
-  .section-content::-webkit-scrollbar { width: 8px; }
-  .section-content::-webkit-scrollbar-track { background: rgba(136, 0, 255, 0.1); }
-  .section-content::-webkit-scrollbar-thumb { background: rgba(136, 0, 255, 0.5); border-radius: 4px; }
+  .detail-page::-webkit-scrollbar { width: 6px; }
+  .detail-page::-webkit-scrollbar-track { background: transparent; }
+  .detail-page::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
   
   /* Responsive */
   @media (max-width: 768px) {
     .portfolio-app:not(.fullscreen) { width: 95vw; height: 80vh; }
-    .name { font-size: 2.5rem; }
-    .contact-links { grid-template-columns: 1fr; }
+    .name-block { font-size: 2.5rem; }
+    .page-title { font-size: 2.2rem; }
+    .nav-buttons { flex-direction: column; }
+    .detail-page { padding: 30px 25px; }
   }
 </style>
