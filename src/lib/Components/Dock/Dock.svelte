@@ -15,7 +15,7 @@
   import CalendarApp from "../Calendar/Calendar.svelte"; 
   import WindcodeApp from "../windcode/windcode.svelte";
   import AppstoreApp from "../Appstore/Appstore.svelte";
-  import WallpaperApp from "../Wallpaper/wallpaper.svelte";
+  import WallpaperApp from "../wallpaper/wallpaper.svelte";
   import LaunchpadApp from "../launchpad/launchpad.svelte";
   import FinderApp from "../Finder/Finder.svelte";
 
