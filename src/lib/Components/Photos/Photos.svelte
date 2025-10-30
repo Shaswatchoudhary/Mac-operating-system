@@ -9,14 +9,14 @@
 	let dragStart = { x: 0, y: 0 };
 	
 	// Start dragging - ignore if clicking controls or buttons
-	const handleMouseDown = (e) => {
-		if (e.target.closest('.window-controls') || e.target.closest('button')) return;
+	const handleMouseDown = (e: MouseEvent) => {
+		if ((e.target as HTMLElement).closest('.window-controls') || (e.target as HTMLElement).closest('button')) return;
 		isDragging = true;
 		dragStart = { x: e.clientX - position.x, y: e.clientY - position.y };
 	};
 	
 	// Update position while dragging
-	const handleMouseMove = (e) => {
+	const handleMouseMove = (e: MouseEvent) => {
 		if (!isDragging) return;
 		position = { x: e.clientX - dragStart.x, y: e.clientY - dragStart.y };
 	};
@@ -36,16 +36,20 @@
 	// Sidebar menu items
 	const sidebarItems = [
 		{ icon: 'library', label: 'Library', active: true },
-		{ icon: 'folder', label: 'Collections' },
-		{ icon: 'heart', label: 'Favourites' },
-		{ icon: 'video', label: 'Videos' },
-		{ icon: 'camera', label: 'Screenshots' }
+		{ icon: 'folder', label: 'Collections', active: false },
+		{ icon: 'heart', label: 'Favourites', active: false },
+		{ icon: 'video', label: 'Videos', active: false },
+		{ icon: 'camera', label: 'Screenshots', active: false }
 	];
+	
+	let activeItem = 'Library';
 	
 	// Initialize Lucide icons
 	onMount(() => {
 		const interval = setInterval(() => {
+			// @ts-ignore - lucide is loaded from CDN
 			if (typeof window.lucide === 'object') {
+				// @ts-ignore
 				window.lucide.createIcons();
 			}
 		}, 100);
@@ -62,11 +66,11 @@
 
 <div class="photos-window" style="left: {position.x}px; top: {position.y}px;">
 	<!-- Window Header -->
-	<div class="window-header" on:mousedown={handleMouseDown}>
+	<div class="window-header" on:mousedown={handleMouseDown} role="none">
 		<div class="window-controls">
-			<div class="control close" on:click={onClose}></div>
-			<div class="control minimize"></div>
-			<div class="control maximize"></div>
+			<button class="control close" on:click={onClose} aria-label="Close"></button>
+			<button class="control minimize" aria-label="Minimize"></button>
+			<button class="control maximize" aria-label="Maximize"></button>
 		</div>
 		
 		<div class="header-title">
@@ -75,42 +79,56 @@
 		</div>
 		
 		<div class="header-actions">
-			<button class="icon-btn"><i data-lucide="minus" style="width: 16px; height: 16px;"></i></button>
-			<button class="icon-btn"><i data-lucide="plus" style="width: 16px; height: 16px;"></i></button>
-			<button class="dropdown-btn">All Photos <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i></button>
-			<button class="icon-btn"><i data-lucide="search" style="width: 18px; height: 18px;"></i></button>
+			<button class="icon-btn" aria-label="Zoom out">
+				<i data-lucide="minus" style="width: 16px; height: 16px;"></i>
+			</button>
+			<button class="icon-btn" aria-label="Zoom in">
+				<i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+			</button>
+			<button class="dropdown-btn" aria-label="Filter photos">
+				All Photos 
+				<i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+			</button>
+			<button class="icon-btn" aria-label="Search">
+				<i data-lucide="search" style="width: 18px; height: 18px;"></i>
+			</button>
 		</div>
 	</div>
 	
 	<!-- Main Content -->
 	<div class="photos-content">
 		<!-- Sidebar -->
-		<div class="sidebar">
+		<nav class="sidebar" aria-label="Photo categories">
 			{#each sidebarItems as item}
-				<div class="sidebar-item {item.active ? 'active' : ''}">
+				<button 
+					class="sidebar-item {item.label === activeItem ? 'active' : ''}"
+					on:click={() => activeItem = item.label}
+					aria-label="{item.label}"
+					aria-current={item.label === activeItem ? 'page' : undefined}
+				>
 					<i data-lucide="{item.icon}" class="icon"></i>
 					<span>{item.label}</span>
-				</div>
+				</button>
 			{/each}
-		</div>
+		</nav>
 		
 		<!-- Photo Grid -->
-		<div class="photo-grid">
+		<main class="photo-grid" aria-label="Photo gallery">
 			{#each photos as photo}
-				<div class="photo-item">
-					<img src={photo.url} alt="Photo {photo.id}" />
+				<button class="photo-item" aria-label="Photo {photo.id}{photo.isRaw ? ', RAW format' : ''}{photo.duration ? ', Video ' + photo.duration : ''}">
+					<img src={photo.url} alt="" />
 					{#if photo.isRaw}
-						<div class="badge raw">RAW</div>
+						<div class="badge raw" aria-hidden="true">RAW</div>
 					{/if}
 					{#if photo.duration}
-						<div class="badge duration">
+						<div class="badge duration" aria-hidden="true">
 							<i data-lucide="play" style="width: 10px; height: 10px;"></i>
 							{photo.duration}
 						</div>
 					{/if}
-				</div>
+				</button>
 			{/each}
-		</div>
+		</main>
 	</div>
 </div>
 
@@ -127,6 +145,7 @@
 		user-select: none;
 		display: flex;
 		flex-direction: column;
+		z-index: 100;
 	}
 	
 	.window-header {
@@ -150,6 +169,8 @@
 		border-radius: 50%;
 		cursor: pointer;
 		transition: opacity 0.2s;
+		border: none;
+		padding: 0;
 	}
 	
 	.control:hover { opacity: 0.8; }
@@ -205,6 +226,10 @@
 		font-size: 13px;
 		cursor: pointer;
 		transition: background 0.2s;
+		width: 100%;
+		border: none;
+		background: transparent;
+		text-align: left;
 	}
 	
 	.sidebar-item:hover { background: rgba(255, 255, 255, 0.1); }
@@ -229,10 +254,17 @@
 		overflow: hidden;
 		cursor: pointer;
 		transition: transform 0.2s;
+		border: none;
+		padding: 0;
+		background: transparent;
 	}
 	
 	.photo-item:hover { transform: scale(1.02); }
-	.photo-item img { width: 100%; height: 100%; object-fit: cover; }
+	.photo-item:focus {
+		outline: 2px solid #ff3c78;
+		outline-offset: 2px;
+	}
+	.photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 	
 	/* Badge styling for RAW and duration */
 	.badge {
@@ -247,6 +279,7 @@
 		display: flex;
 		align-items: center;
 		gap: 4px;
+		pointer-events: none;
 	}
 	
 	.badge.raw { top: 8px; left: 8px; }

@@ -48,10 +48,46 @@
   function handleBackgroundClick() {
     onClose();
   }
+
+  function handleKeyDown(event) {
+    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+      }
+      onClose();
+    }
+  }
+
+  function handleAppClick(appName) {
+    console.log('Clicked:', appName);
+    // Add your app launch logic here
+  }
+
+  function handleAppKeyDown(event, appName) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleAppClick(appName);
+    }
+  }
 </script>
 
-<div class="launchpad" on:click={handleBackgroundClick} role="button" tabindex="0">
-  <div class="launchpad-content" on:click|stopPropagation role="dialog">
+<div 
+  class="launchpad-overlay" 
+  on:click={handleBackgroundClick}
+  on:keydown={handleKeyDown}
+  role="button"
+  tabindex="0"
+  aria-label="Close Launchpad"
+>
+  <div 
+    class="launchpad-content" 
+    on:click|stopPropagation
+    on:keydown|stopPropagation
+    role="dialog" 
+    aria-modal="true" 
+    aria-label="Application Launcher"
+    tabindex="-1"
+  >
     
     <!-- Search Bar -->
     <div class="search-bar">
@@ -64,34 +100,40 @@
         placeholder="Search" 
         class="search-input"
         bind:value={searchQuery}
-        autofocus
+        aria-label="Search applications"
       />
     </div>
     
     <!-- App Grid -->
-    <div class="app-grid">
+    <div class="app-grid" role="grid" aria-label="Applications">
       {#each filteredApps as app}
-        <div class="app-item">
+        <button
+          class="app-item"
+          on:click={() => handleAppClick(app.name)}
+          on:keydown={(e) => handleAppKeyDown(e, app.name)}
+          aria-label="Open {app.name}"
+          role="gridcell"
+        >
           <div class="app-icon">
-            <img src={app.src} alt={app.name} />
+            <img src={app.src} alt="" />
           </div>
           <div class="app-name">{app.name}</div>
-        </div>
+        </button>
       {/each}
     </div>
     
     <!-- Page Dots -->
-    <div class="page-dots">
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+    <div class="page-dots" role="navigation" aria-label="Page indicators">
+      <button class="dot active" aria-label="Page 1" aria-current="page"></button>
+      <button class="dot" aria-label="Page 2"></button>
+      <button class="dot" aria-label="Page 3"></button>
     </div>
     
   </div>
 </div>
 
 <style>
-  .launchpad {
+  .launchpad-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -106,6 +148,10 @@
     justify-content: center;
     animation: fadeIn 0.3s ease;
     cursor: pointer;
+  }
+  
+  .launchpad-overlay:focus {
+    outline: none;
   }
   
   @keyframes fadeIn {
@@ -181,6 +227,9 @@
     align-items: center;
     cursor: pointer;
     transition: transform 0.2s;
+    background: transparent;
+    border: none;
+    padding: 0;
   }
   
   .app-item:hover {
@@ -189,6 +238,12 @@
   
   .app-item:active {
     transform: scale(0.95);
+  }
+  
+  .app-item:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 4px;
+    border-radius: 26px;
   }
   
   .app-icon {
@@ -241,6 +296,18 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
     transition: all 0.3s;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .dot:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .dot:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.7);
+    outline-offset: 2px;
   }
   
   .dot.active {

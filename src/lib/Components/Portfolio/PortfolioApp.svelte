@@ -237,9 +237,9 @@
 <div class="portfolio-app {isFullscreen ? 'fullscreen' : ''}">
   <!-- Window controls -->
   <div class="window-controls">
-    <div class="control close" on:click={onClose}></div>
-    <div class="control minimize" on:click={() => isFullscreen = false}></div>
-    <div class="control maximize" on:click={toggleFullscreen}></div>
+    <button class="control close" on:click={onClose} aria-label="Close"></button>
+    <button class="control minimize" on:click={() => isFullscreen = false} aria-label="Minimize"></button>
+    <button class="control maximize" on:click={toggleFullscreen} aria-label="Maximize"></button>
   </div>
   
   <!-- 3D Canvas -->
@@ -327,7 +327,7 @@
                 <h3>{project.title}</h3>
                 <div class="project-links">
                   <span class="project-year">{project.year}</span>
-                  <a href={project.github} target="_blank" class="github-link" title="View on GitHub">
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" class="github-link" title="View on GitHub">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                     </svg>
@@ -366,7 +366,7 @@
           
           <div class="social-links">
             {#each portfolio.contact.links as link}
-              <a href={link.url} target="_blank" class="social-link">
+              <a href={link.url} target="_blank" rel="noopener noreferrer" class="social-link">
                 <span class="link-icon">
                   {#if link.icon === 'github'}
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -437,6 +437,8 @@
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.2s;
+    border: none;
+    padding: 0;
   }
   
   .control:hover { transform: scale(1.15); }
@@ -747,8 +749,7 @@
   
   .contact-info {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    flex-direction: column;gap: 20px;
   }
   
   .info-item {

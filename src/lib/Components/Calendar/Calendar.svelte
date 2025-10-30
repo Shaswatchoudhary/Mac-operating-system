@@ -12,8 +12,8 @@
 		onClose();
 	};
 	
-	const handleMouseDown = (e) => {
-		if (e.target.closest('.window-controls') || e.target.closest('button')) return;
+	const handleMouseDown = (e: MouseEvent) => {
+		if ((e.target as HTMLElement).closest('.window-controls') || (e.target as HTMLElement).closest('button')) return;
 		isDragging = true;
 		dragStart = {
 			x: e.clientX - position.x,
@@ -21,7 +21,7 @@
 		};
 	};
 	
-	const handleMouseMove = (e) => {
+	const handleMouseMove = (e: MouseEvent) => {
 		if (!isDragging) return;
 		position = {
 			x: e.clientX - dragStart.x,
@@ -53,20 +53,20 @@
 	const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	
 	// Empty events array - no dummy data
-	const events = [];
+	const events: any[] = [];
 	
-	function getDaysInMonth(month, year) {
+	function getDaysInMonth(month: number, year: number) {
 		return new Date(year, month + 1, 0).getDate();
 	}
 	
-	function getFirstDayOfMonth(month, year) {
+	function getFirstDayOfMonth(month: number, year: number) {
 		return new Date(year, month, 1).getDay();
 	}
 	
 	function generateCalendar() {
 		const daysInMonth = getDaysInMonth(currentMonth, currentYear);
 		const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-		const calendar = [];
+		const calendar: { day: number; isCurrentMonth: boolean }[] = [];
 		
 		// Previous month days
 		const prevMonthDays = getDaysInMonth(currentMonth - 1, currentYear);
@@ -88,7 +88,7 @@
 		return calendar;
 	}
 	
-	function getEventsForDay(day) {
+	function getEventsForDay(day: number) {
 		return events.filter(e => e.date === day);
 	}
 	
@@ -120,12 +120,16 @@
 	$: isCurrentMonthAndYear = currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
 	
 	onMount(() => {
+		// @ts-ignore - lucide is loaded from CDN
 		if (typeof window.lucide === 'object') {
+			// @ts-ignore
 			window.lucide.createIcons();
 		}
 		
 		const interval = setInterval(() => {
+			// @ts-ignore
 			if (typeof window.lucide === 'object') {
+				// @ts-ignore
 				window.lucide.createIcons();
 			}
 		}, 100);
@@ -142,63 +146,67 @@
 
 <div class="calendar-window" style="left: {position.x}px; top: {position.y}px;">
 	<!-- Window Header -->
-	<div class="window-header" on:mousedown={handleMouseDown}>
+	<div class="window-header" on:mousedown={handleMouseDown} role="none">
 		<div class="window-controls">
-			<div class="control close" on:click={handleClose}></div>
-			<div class="control minimize"></div>
-			<div class="control maximize"></div>
+			<button class="control close" on:click={handleClose} aria-label="Close"></button>
+			<button class="control minimize" aria-label="Minimize"></button>
+			<button class="control maximize" aria-label="Maximize"></button>
 		</div>
 		
 		<div class="header-actions">
-			<button class="icon-btn">
+			<button class="icon-btn" aria-label="Calendar">
 				<i data-lucide="calendar-days" style="width: 16px; height: 16px;"></i>
 			</button>
-			<button class="icon-btn">
+			<button class="icon-btn" aria-label="Inbox">
 				<i data-lucide="inbox" style="width: 16px; height: 16px;"></i>
 			</button>
-			<button class="icon-btn plus-btn">
+			<button class="icon-btn plus-btn" aria-label="Add event">
 				<i data-lucide="plus" style="width: 18px; height: 18px;"></i>
 			</button>
 		</div>
 		
-		<div class="view-switcher">
+		<nav class="view-switcher" aria-label="Calendar view">
 			<button class={currentView === 'Day' ? 'active' : ''} on:click={() => currentView = 'Day'}>Day</button>
 			<button class={currentView === 'Week' ? 'active' : ''} on:click={() => currentView = 'Week'}>Week</button>
 			<button class={currentView === 'Month' ? 'active' : ''} on:click={() => currentView = 'Month'}>Month</button>
 			<button class={currentView === 'Year' ? 'active' : ''} on:click={() => currentView = 'Year'}>Year</button>
-		</div>
+		</nav>
 		
 		<div class="search-btn">
-			<button class="icon-btn">
+			<button class="icon-btn" aria-label="Search">
 				<i data-lucide="search" style="width: 16px; height: 16px;"></i>
 			</button>
 		</div>
 	</div>
 	
 	<!-- Calendar Content -->
-	<div class="calendar-content">
+	<main class="calendar-content">
 		<div class="calendar-header">
 			<h1>{monthNames[currentMonth]} {currentYear}</h1>
-			<div class="navigation">
-				<button class="nav-btn" on:click={goToPreviousMonth}>
+			<nav class="navigation" aria-label="Month navigation">
+				<button class="nav-btn" on:click={goToPreviousMonth} aria-label="Previous month">
 					<i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
 				</button>
 				<button class="today-btn" on:click={goToToday}>Today</button>
-				<button class="nav-btn" on:click={goToNextMonth}>
+				<button class="nav-btn" on:click={goToNextMonth} aria-label="Next month">
 					<i data-lucide="chevron-right" style="width: 20px; height: 20px;"></i>
 				</button>
-			</div>
+			</nav>
 		</div>
 		
-		<div class="calendar-grid">
+		<div class="calendar-grid" role="grid" aria-label="Calendar dates">
 			<!-- Day names -->
 			{#each dayNames as dayName}
-				<div class="day-name">{dayName}</div>
+				<div class="day-name" role="columnheader">{dayName}</div>
 			{/each}
 			
 			<!-- Calendar days -->
 			{#each calendarDays as { day, isCurrentMonth }, i}
-				<div class="calendar-day {isCurrentMonth ? 'current-month' : 'other-month'} {isCurrentMonth && day === today && isCurrentMonthAndYear ? 'today' : ''}">
+				<div 
+					class="calendar-day {isCurrentMonth ? 'current-month' : 'other-month'} {isCurrentMonth && day === today && isCurrentMonthAndYear ? 'today' : ''}"
+					role="gridcell"
+					aria-label="{isCurrentMonth ? '' : 'Other month, '}{monthNames[currentMonth]} {day}"
+				>
 					<div class="day-number">{day}</div>
 					<div class="events">
 						{#each getEventsForDay(day) as event, idx}
@@ -222,7 +230,7 @@
 				</div>
 			{/each}
 		</div>
-	</div>
+	</main>
 </div>
 
 <style>
@@ -238,6 +246,7 @@
 		user-select: none;
 		display: flex;
 		flex-direction: column;
+		z-index: 100;
 	}
 	
 	.window-header {
@@ -268,6 +277,8 @@
 		border-radius: 50%;
 		cursor: pointer;
 		transition: opacity 0.2s;
+		border: none;
+		padding: 0;
 	}
 	
 	.control:hover {

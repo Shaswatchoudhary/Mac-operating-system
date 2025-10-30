@@ -17,14 +17,14 @@
 	};
 	
 	// Start dragging window - only if not maximized and not clicking controls
-	const handleMouseDown = (e) => {
-		if (isMaximized || e.target.closest('.window-controls') || e.target.closest('button')) return;
+	const handleMouseDown = (e: MouseEvent) => {
+		if (isMaximized || (e.target as HTMLElement).closest('.window-controls') || (e.target as HTMLElement).closest('button')) return;
 		isDragging = true;
 		dragStart = { x: e.clientX - position.x, y: e.clientY - position.y };
 	};
 	
 	// Update window position while dragging
-	const handleMouseMove = (e) => {
+	const handleMouseMove = (e: MouseEvent) => {
 		if (!isDragging || isMaximized) return;
 		position = { x: e.clientX - dragStart.x, y: e.clientY - dragStart.y };
 	};
@@ -55,7 +55,9 @@
 	// Initialize Lucide icons after component mounts
 	onMount(() => {
 		const interval = setInterval(() => {
+			// @ts-ignore - lucide is loaded from CDN
 			if (typeof window.lucide === 'object') {
+				// @ts-ignore
 				window.lucide.createIcons();
 			}
 		}, 100);
@@ -72,11 +74,12 @@
 
 <div class="appstore-window {isMaximized ? 'maximized' : ''}" style="{isMaximized ? '' : `left: ${position.x}px; top: ${position.y}px;`}">
 	<!-- Window Header with macOS-style controls -->
-	<div class="window-header" on:mousedown={handleMouseDown}>
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="window-header" on:mousedown={handleMouseDown} role="none">
 		<div class="window-controls">
-			<div class="control close" on:click={onClose}></div>
-			<div class="control minimize"></div>
-			<div class="control maximize" on:click={handleMaximize}></div>
+			<button class="control close" on:click={onClose} aria-label="Close"></button>
+			<button class="control minimize" aria-label="Minimize"></button>
+			<button class="control maximize" on:click={handleMaximize} aria-label="Maximize"></button>
 		</div>
 		<div class="header-title">
 			<i data-lucide="package" style="width: 18px; height: 18px;"></i>
@@ -86,17 +89,17 @@
 	
 	<div class="appstore-content">
 		<!-- Sidebar Navigation -->
-		<div class="sidebar">
+		<nav class="sidebar" aria-label="App categories">
 			{#each ['Discover', 'Arcade', 'Create', 'Work', 'Categories', 'Updates'] as tab}
 				<button class="sidebar-item {activeTab === tab ? 'active' : ''}" on:click={() => activeTab = tab}>
 					<i data-lucide="{tab === 'Discover' ? 'compass' : tab === 'Arcade' ? 'gamepad-2' : tab === 'Create' ? 'palette' : tab === 'Work' ? 'briefcase' : tab === 'Categories' ? 'grid-3x3' : 'refresh-cw'}" class="sidebar-icon"></i>
 					<span>{tab}</span>
 				</button>
 			{/each}
-		</div>
+		</nav>
 		
 		<!-- Main Content Area -->
-		<div class="main-content">
+		<main class="main-content">
 			<!-- Search Bar -->
 			<div class="search-bar">
 				<div class="search-input-wrapper">
@@ -113,9 +116,16 @@
 						<h2 class="section-title">Featured</h2>
 						<div class="featured-grid">
 							{#each featuredApps as app}
-								<div class="featured-card">
-									<div class="featured-banner" style="background: {app.banner}">
-										<i data-lucide="{app.icon}" class="featured-icon"></i>
+								<div 
+									class="featured-card" 
+									role="button"
+									tabindex="0"
+									aria-label="View {app.name}"
+									on:click={() => console.log('Clicked:', app.name)}
+									on:keydown={(e) => e.key === 'Enter' && console.log('Clicked:', app.name)}
+								>
+									<div class="app-icon">
+										<i data-lucide="{app.icon}" style="width: 32px; height: 32px;"></i>
 									</div>
 									<div class="featured-info">
 										<h3>{app.name}</h3>
@@ -123,10 +133,18 @@
 										<p class="description">{app.description}</p>
 										<div class="featured-footer">
 											<div class="rating">
-												<span class="stars"><i data-lucide="star" style="width: 14px; height: 14px; fill: #ff9500; color: #ff9500;"></i> {app.rating}</span>
+												<span class="stars">
+													<i data-lucide="star" style="width: 14px; height: 14px; fill: #ff9500; color: #ff9500;"></i> 
+													{app.rating}
+												</span>
 												<span class="reviews">{app.reviews}</span>
 											</div>
-											<button class="get-btn">{app.price}</button>
+											<button 
+												class="get-btn" 
+												on:click|stopPropagation={() => console.log('Get:', app.name)}
+											>
+												{app.price}
+											</button>
 										</div>
 									</div>
 								</div>
@@ -139,15 +157,32 @@
 						<h2 class="section-title">Popular Apps</h2>
 						<div class="app-list">
 							{#each popularApps as app}
-								<div class="app-item">
-									<div class="app-icon-small"><i data-lucide="{app.icon}"></i></div>
+								<div 
+									class="app-item"
+									role="button"
+									tabindex="0"
+									aria-label="View {app.name}"
+									on:click={() => console.log('Clicked:', app.name)}
+									on:keydown={(e) => e.key === 'Enter' && console.log('Clicked:', app.name)}
+								>
+									<div class="app-icon-small">
+										<i data-lucide="{app.icon}"></i>
+									</div>
 									<div class="app-info">
 										<h4>{app.name}</h4>
 										<p class="developer">{app.developer}</p>
 									</div>
 									<div class="app-actions">
-										<div class="rating-small"><i data-lucide="star" style="width: 12px; height: 12px; fill: #ff9500; color: #ff9500;"></i> {app.rating}</div>
-										<button class="get-btn-small">{app.price}</button>
+										<div class="rating-small">
+											<i data-lucide="star" style="width: 12px; height: 12px; fill: #ff9500; color: #ff9500;"></i> 
+											{app.rating}
+										</div>
+										<button 
+											class="get-btn-small"
+											on:click|stopPropagation={() => console.log('Get:', app.name)}
+										>
+											{app.price}
+										</button>
 									</div>
 								</div>
 							{/each}
@@ -160,10 +195,17 @@
 						<h2 class="section-title">All Categories</h2>
 						<div class="categories-grid">
 							{#each categories as category}
-								<div class="category-card" style="--category-color: {category.color}">
-									<div class="category-icon"><i data-lucide="{category.icon}"></i></div>
+								<button 
+									class="category-card" 
+									style="--category-color: {category.color}" 
+									aria-label="Browse {category.name}"
+									on:click={() => console.log('Category:', category.name)}
+								>
+									<div class="category-icon">
+										<i data-lucide="{category.icon}"></i>
+									</div>
 									<div class="category-name">{category.name}</div>
-								</div>
+								</button>
 							{/each}
 						</div>
 					</section>
@@ -177,7 +219,7 @@
 					</div>
 				{/if}
 			</div>
-		</div>
+		</main>
 	</div>
 </div>
 
@@ -194,6 +236,7 @@
 		user-select: none;
 		display: flex;
 		flex-direction: column;
+		z-index: 100;
 	}
 	
 	/* Maximized state - full viewport */
@@ -230,6 +273,8 @@
 		border-radius: 50%;
 		cursor: pointer;
 		transition: opacity 0.2s;
+		border: none;
+		padding: 0;
 	}
 	
 	.control:hover { opacity: 0.8; }
@@ -341,6 +386,12 @@
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 		transition: transform 0.3s, box-shadow 0.3s;
 		cursor: pointer;
+		border: none;
+		padding: 0;
+		text-align: left;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
 	}
 	
 	.featured-card:hover {
@@ -348,18 +399,13 @@
 		box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 	}
 	
-	.featured-banner {
+	.app-icon {
 		height: 180px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-	
-	.featured-icon {
-		width: 80px;
-		height: 80px;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 		color: white;
-		filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 	}
 	
 	.featured-info { padding: 20px; }
@@ -398,6 +444,9 @@
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 		transition: transform 0.2s;
 		cursor: pointer;
+		border: none;
+		text-align: left;
+		width: 100%;
 	}
 	
 	.app-item:hover { transform: translateX(4px); }
@@ -451,6 +500,10 @@
 		cursor: pointer;
 		transition: all 0.3s;
 		border-top: 4px solid var(--category-color);
+		border-left: none;
+		border-right: none;
+		border-bottom: none;
+		width: 100%;
 	}
 	
 	.category-card:hover {
@@ -480,5 +533,5 @@
 	.content-scroll::-webkit-scrollbar, .sidebar::-webkit-scrollbar { width: 8px; }
 	.content-scroll::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track { background: transparent; }
 	.content-scroll::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
-	.content-scroll::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
+	.content-scroll::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-hover { background: rgba(0, 0, 0, 0.3); }
 </style>

@@ -11,14 +11,14 @@
 	let dragStart = { x: 0, y: 0 };
 	
 	// Start dragging - ignore if clicking controls
-	const handleMouseDown = (e) => {
-		if (e.target.closest('.window-controls')) return;
+	const handleMouseDown = (e: MouseEvent) => {
+		if ((e.target as HTMLElement).closest('.window-controls')) return;
 		isDragging = true;
 		dragStart = { x: e.clientX - position.x, y: e.clientY - position.y };
 	};
 	
 	// Update position while dragging
-	const handleMouseMove = (e) => {
+	const handleMouseMove = (e: MouseEvent) => {
 		if (!isDragging) return;
 		position = { x: e.clientX - dragStart.x, y: e.clientY - dragStart.y };
 	};
@@ -67,17 +67,18 @@
 {#if isVisible}
 <div class="calculator-window" style="left: {position.x}px; top: {position.y}px;">
 	<!-- Window header with macOS controls -->
-	<div class="window-header" on:mousedown={handleMouseDown}>
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="window-header" on:mousedown={handleMouseDown} role="none">
 		<div class="window-controls">
-			<div class="control close" on:click={() => isVisible = false}></div>
-			<div class="control minimize"></div>
-			<div class="control maximize"></div>
+			<button class="control close" on:click={() => isVisible = false} aria-label="Close"></button>
+			<button class="control minimize" aria-label="Minimize"></button>
+			<button class="control maximize" aria-label="Maximize"></button>
 		</div>
 	</div>
 	
 	<div class="calculator-body">
 		<!-- Display area -->
-		<div class="display">{display}</div>
+		<div class="display" aria-live="polite" aria-label="Calculator display">{display}</div>
 		
 		<!-- Calculator buttons grid -->
 		<div class="buttons">
@@ -85,6 +86,7 @@
 				<button 
 					class="{btn >= '0' && btn <= '9' || btn === '.' ? 'number-btn' : ['+', '−', '×', '÷', '='].includes(btn) ? 'operator-btn' : 'function-btn'} {btn === '0' ? 'zero-btn' : ''}"
 					on:click={() => handleClick(btn)}
+					aria-label="{btn === 'AC' ? 'All Clear' : btn === '+/−' ? 'Plus Minus' : btn === '%' ? 'Percent' : btn === '÷' ? 'Divide' : btn === '×' ? 'Multiply' : btn === '−' ? 'Subtract' : btn === '+' ? 'Add' : btn === '=' ? 'Equals' : btn}"
 				>
 					{btn}
 				</button>
@@ -122,6 +124,8 @@
 		border-radius: 50%;
 		cursor: pointer;
 		transition: opacity 0.2s;
+		border: none;
+		padding: 0;
 	}
 	
 	.control:hover { opacity: 0.8; }

@@ -10,7 +10,6 @@
   import wallpaper3 from '$lib/assets/wallpaper/wallpaper3.png';
   import wallpaper4 from '$lib/assets/wallpaper/wallpaper4.png';
   
-  // Wallpapers array - reduced to 4 for brevity
   let wallpapers = [
     { name: "Wallpaper 1", image: wallpaper1 },
     { name: "Wallpaper 2", image: wallpaper2 },
@@ -18,29 +17,25 @@
     { name: "Wallpaper 4", image: wallpaper4 }
   ];
 
-  // Select wallpaper and notify parent component
   function selectWallpaper(index) {
     selectedWallpaper = index;
     if (onSelect) onSelect(wallpapers[index].image);
   }
 </script>
 
-<!-- Removed blur effect from overlay -->
 <div class="settings-overlay">
   <div class="settings-window {isMaximized ? 'maximized' : ''}">
-    <!-- Window header with macOS controls -->
     <div class="window-header">
       <div class="window-controls">
-        <button on:click={onClose} class="control close" />
-        <button class="control minimize" />
-        <button on:click={() => isMaximized = !isMaximized} class="control maximize" />
+        <button on:click={onClose} class="control close" aria-label="Close window"></button>
+        <button class="control minimize" aria-label="Minimize window"></button>
+        <button on:click={() => isMaximized = !isMaximized} class="control maximize" aria-label="Maximize window"></button>
       </div>
       <div class="window-title">Desktop & Screen Saver</div>
-      <div class="spacer" />
+      <div class="spacer"></div>
     </div>
 
     <div class="settings-content">
-      <!-- Sidebar navigation -->
       <div class="sidebar">
         <div class="sidebar-label">Settings</div>
         <div class="sidebar-items">
@@ -49,14 +44,12 @@
         </div>
       </div>
 
-      <!-- Main content area -->
       <div class="main-content">
         <div class="content-header">
           <h2>Choose Your Desktop Picture</h2>
           <p>Select a wallpaper from the options below</p>
         </div>
 
-        <!-- Wallpaper grid with selection -->
         <div class="wallpaper-grid">
           {#each wallpapers as wallpaper, index}
             <div
@@ -81,11 +74,10 @@
           {/each}
         </div>
 
-        <!-- Additional settings options -->
         <div class="settings-options">
           <div class="option-row">
-            <label>Change picture:</label>
-            <select>
+            <label for="change-picture-select">Change picture:</label>
+            <select id="change-picture-select">
               <option>Never</option>
               <option>Every 5 seconds</option>
               <option>Every minute</option>
@@ -103,7 +95,6 @@
 </div>
 
 <style>
-  /* Overlay without blur effect */
   .settings-overlay {
     position: fixed;
     top: 0;
@@ -131,7 +122,6 @@
     transition: all 0.3s ease;
   }
 
-  /* Maximized state - fills viewport */
   .settings-window.maximized {
     width: calc(100vw - 60px);
     height: calc(100vh - 60px);
@@ -148,7 +138,6 @@
 
   .window-controls { display: flex; gap: 8px; }
   
-  /* macOS-style window controls */
   .control {
     width: 12px;
     height: 12px;
@@ -167,7 +156,6 @@
   
   .settings-content { display: flex; flex: 1; overflow: hidden; }
   
-  /* Sidebar styling */
   .sidebar {
     width: 192px;
     background: #f5f5f5;
@@ -203,7 +191,6 @@
   .content-header h2 { font-size: 20px; font-weight: 600; color: #1d1d1f; margin: 0 0 8px 0; }
   .content-header p { font-size: 13px; color: #666; margin: 0; }
   
-  /* Wallpaper grid - responsive */
   .wallpaper-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -226,7 +213,6 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   }
 
-  /* Selected wallpaper highlighting */
   .wallpaper-item.selected {
     border-color: #007aff;
     transform: scale(1.05);
@@ -235,7 +221,6 @@
 
   .wallpaper-item img { width: 100%; height: 160px; object-fit: cover; display: block; }
   
-  /* Checkmark indicator for selected wallpaper */
   .checkmark {
     position: absolute;
     top: 8px;
@@ -283,7 +268,6 @@
   .checkbox-label { display: flex; align-items: center; font-size: 13px; color: #333; cursor: pointer; }
   .checkbox-label input { margin-right: 8px; cursor: pointer; }
   
-  /* Scrollbar styling */
   .main-content::-webkit-scrollbar { width: 8px; }
   .main-content::-webkit-scrollbar-track { background: transparent; }
   .main-content::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }

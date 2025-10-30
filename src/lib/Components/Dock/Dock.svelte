@@ -25,7 +25,7 @@
     { name: "Photos", icon: PhotosIcon },
     { name: "Calculator", icon: CalculatorIcon },
     { name: "Calendar", icon: CalendarIcon },
-    { name: "Windcode", icon: VSCodeIcon },
+    { name: "Windcode", icon:  WindcodeIcon },
     { name: "App Store", icon: AppstoreIcon },
     { name: "Portfolio", icon: FoxIcon }, 
     { name: "Wallpaper", icon: WallpaperIcon }, 

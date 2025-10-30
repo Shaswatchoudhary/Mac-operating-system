@@ -56,11 +56,11 @@
   style="{isMaximized ? '' : `left: ${position.x}px; top: ${position.y}px;`}"
 >
   <!-- Header -->
-  <div class="window-header" on:mousedown={handleMouseDown}>
+  <div class="window-header" on:mousedown={handleMouseDown} role="none">
     <div class="window-controls">
-      <div class="control close" on:click={onClose}></div>
-      <div class="control minimize"></div>
-      <div class="control maximize" on:click={() => isMaximized = !isMaximized}></div>
+      <button class="control close" on:click={onClose} aria-label="Close"></button>
+      <button class="control minimize" aria-label="Minimize"></button>
+      <button class="control maximize" on:click={() => isMaximized = !isMaximized} aria-label="Maximize"></button>
     </div>
     <div class="header-title">{currentFolder}</div>
     <div class="window-controls-placeholder"></div>
@@ -69,25 +69,25 @@
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar-left">
-      <button class="toolbar-btn">
+      <button class="toolbar-btn" aria-label="Go back">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M15 18l-6-6 6-6"/>
         </svg>
       </button>
-      <button class="toolbar-btn">
+      <button class="toolbar-btn" aria-label="Go forward">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 18l6-6-6-6"/>
         </svg>
       </button>
       
       <div class="view-buttons">
-        <button class="view-btn {currentView === 'icons' ? 'active' : ''}" on:click={() => currentView = 'icons'}>
+        <button class="view-btn {currentView === 'icons' ? 'active' : ''}" on:click={() => currentView = 'icons'} aria-label="Icon view">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
             <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
           </svg>
         </button>
-        <button class="view-btn {currentView === 'list' ? 'active' : ''}" on:click={() => currentView = 'list'}>
+        <button class="view-btn {currentView === 'list' ? 'active' : ''}" on:click={() => currentView = 'list'} aria-label="List view">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <rect x="3" y="4" width="18" height="2" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/>
             <rect x="3" y="18" width="18" height="2" rx="1"/>
@@ -105,12 +105,16 @@
         <div class="sidebar-section">
           <div class="sidebar-header">{section.section}</div>
           {#each section.items as item}
-            <div class="sidebar-item {item.name === currentFolder ? 'active' : ''}" on:click={() => currentFolder = item.name}>
+            <button 
+              class="sidebar-item {item.name === currentFolder ? 'active' : ''}" 
+              on:click={() => currentFolder = item.name}
+              aria-label="{item.name}"
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="{item.color}">
                 <rect x="4" y="4" width="16" height="16" rx="2"/>
               </svg>
               <span>{item.name}</span>
-            </div>
+            </button>
           {/each}
         </div>
       {/each}
@@ -121,7 +125,11 @@
       {#if currentView === 'icons'}
         <div class="icon-view">
           {#each files as file, i}
-            <div class="file-icon {selectedItems.has(i) ? 'selected' : ''}" on:click={() => selectItem(i)}>
+            <button 
+              class="file-icon {selectedItems.has(i) ? 'selected' : ''}" 
+              on:click={() => selectItem(i)}
+              aria-label="{file.name}, {file.type}"
+            >
               <svg width="48" height="48" viewBox="0 0 24 24" fill="{file.color}">
                 {#if file.type === 'Folder'}
                   <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
@@ -131,7 +139,7 @@
                 {/if}
               </svg>
               <div class="icon-name">{file.name}</div>
-            </div>
+            </button>
           {/each}
         </div>
       {:else}
@@ -143,7 +151,11 @@
             <div class="list-col-kind">Kind</div>
           </div>
           {#each files as file, i}
-            <div class="list-row {selectedItems.has(i) ? 'selected' : ''}" on:click={() => selectItem(i)}>
+            <button 
+              class="list-row {selectedItems.has(i) ? 'selected' : ''}" 
+              on:click={() => selectItem(i)}
+              aria-label="{file.name}, {file.type}, {file.size}, modified {file.modified}"
+            >
               <div class="list-col-name">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="{file.color}">
                   {#if file.type === 'Folder'}
@@ -157,7 +169,7 @@
               <div class="list-col-modified">{file.modified}</div>
               <div class="list-col-size">{file.size}</div>
               <div class="list-col-kind">{file.type}</div>
-            </div>
+            </button>
           {/each}
         </div>
       {/if}
@@ -218,6 +230,8 @@
     height: 12px;
     border-radius: 50%;
     cursor: pointer;
+    border: none;
+    padding: 0;
   }
   
   .control.close { background: #ff5f57; }
@@ -300,6 +314,10 @@
     padding: 4px 16px;
     font-size: 13px;
     cursor: pointer;
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
   }
   
   .sidebar-item:hover { background: #e8e8e8; }
@@ -325,6 +343,8 @@
     cursor: pointer;
     padding: 8px;
     border-radius: 8px;
+    border: none;
+    background: transparent;
   }
   
   .file-icon:hover { background: #f0f0f0; }
@@ -335,6 +355,7 @@
     font-size: 12px;
     text-align: center;
     margin-top: 8px;
+    color: #000;
   }
   
   .list-view { display: flex; flex-direction: column; }
@@ -357,6 +378,11 @@
     font-size: 13px;
     border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    color: #000;
   }
   
   .list-row:hover { background: #f6f6f6; }

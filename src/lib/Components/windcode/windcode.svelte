@@ -6,7 +6,6 @@
 	let dragStart = { x: 0, y: 0 };
 	let isMaximized = false;
 	
-	// GitHub repository details
 	const GITHUB_REPO = 'Shaswatchoudhary/Mac-operating-system';
 	const GITHUB_BRANCH = 'main';
 	
@@ -52,7 +51,6 @@
 		isDragging = false;
 	};
 	
-	// Fetch repository file tree from GitHub API
 	async function fetchFileTree() {
 		try {
 			loading = true;
@@ -73,7 +71,6 @@
 			fileTree = buildFileTree(data.tree);
 			loading = false;
 			
-			// Auto-open README if exists
 			const readme = data.tree.find(item => 
 				(item.path.toLowerCase() === 'readme.md' || 
 				 item.path.toLowerCase() === 'readme.txt') && 
@@ -89,12 +86,10 @@
 		}
 	}
 	
-	// Build nested file tree structure
 	function buildFileTree(items) {
 		const tree = [];
 		const folderMap = {};
 		
-		// First pass: create all items
 		items.forEach(item => {
 			if (item.type === 'tree') {
 				folderMap[item.path] = {
@@ -106,13 +101,11 @@
 			}
 		});
 		
-		// Second pass: organize files and folders
 		items.forEach(item => {
 			const parts = item.path.split('/');
 			const fileName = parts[parts.length - 1];
 			
 			if (parts.length === 1) {
-				// Root level item
 				if (item.type === 'tree') {
 					tree.push(folderMap[item.path]);
 				} else {
@@ -124,7 +117,6 @@
 					});
 				}
 			} else {
-				// Nested item
 				const parentPath = parts.slice(0, -1).join('/');
 				const parent = folderMap[parentPath];
 				
@@ -143,7 +135,6 @@
 			}
 		});
 		
-		// Sort: folders first, then alphabetically
 		const sortItems = (items) => {
 			items.sort((a, b) => {
 				if (a.type === 'tree' && b.type !== 'tree') return -1;
@@ -161,7 +152,6 @@
 		return tree;
 	}
 	
-	// Fetch file content from GitHub
 	async function openFile(path, sha) {
 		try {
 			currentFile = { path, sha };
@@ -175,11 +165,9 @@
 			
 			const data = await response.json();
 			
-			// Decode base64 content
 			try {
 				fileContent = atob(data.content);
 			} catch (e) {
-				// If atob fails, might be binary file
 				fileContent = 'Binary file - cannot display';
 			}
 		} catch (err) {
@@ -188,7 +176,6 @@
 		}
 	}
 	
-	// Toggle folder expansion
 	function toggleFolder(folderPath) {
 		if (expandedFolders.has(folderPath)) {
 			expandedFolders.delete(folderPath);
@@ -198,7 +185,6 @@
 		expandedFolders = expandedFolders;
 	}
 	
-	// Get file icon SVG based on extension
 	function getFileIcon(name) {
 		const ext = name.split('.').pop().toLowerCase();
 		const icons = {
@@ -223,7 +209,6 @@
 		return isOpen ? getFileIcon('folder-open') : getFileIcon('folder');
 	}
 	
-	// Get language for syntax highlighting hint
 	function getLanguage(filename) {
 		const ext = filename.split('.').pop().toLowerCase();
 		const languages = {
@@ -235,7 +220,6 @@
 		return languages[ext] || 'text';
 	}
 	
-	// Initialize on mount
 	fetchFileTree();
 </script>
 
@@ -245,12 +229,18 @@
 	class="vscode-window {isMaximized ? 'maximized' : ''}" 
 	style="{isMaximized ? '' : `left: ${position.x}px; top: ${position.y}px;`}"
 >
-	<!-- Window Header -->
-	<div class="window-header" on:mousedown={handleMouseDown}>
+	<div 
+		class="window-header" 
+		on:mousedown={handleMouseDown}
+		on:keydown={() => {}}
+		role="toolbar"
+		aria-label="Window controls and title bar"
+		tabindex="-1"
+	>
 		<div class="window-controls">
-			<div class="control close" on:click={handleClose}></div>
-			<div class="control minimize"></div>
-			<div class="control maximize" on:click={handleMaximize}></div>
+			<button class="control close" on:click={handleClose} aria-label="Close window"></button>
+			<button class="control minimize" aria-label="Minimize window"></button>
+			<button class="control maximize" on:click={handleMaximize} aria-label="Maximize window"></button>
 		</div>
 		
 		<div class="header-title">
@@ -259,9 +249,7 @@
 		</div>
 	</div>
 	
-	<!-- Main Content -->
 	<div class="vscode-content">
-		<!-- Sidebar -->
 		<div class="sidebar">
 			<div class="sidebar-header">
 				<div class="sidebar-title">EXPLORER</div>
@@ -278,58 +266,63 @@
 						{#each fileTree as item}
 							{#if item.type === 'tree'}
 								<div class="tree-item">
-									<div 
+									<button 
 										class="folder-item" 
 										on:click={() => toggleFolder(item.path)}
+										aria-expanded={expandedFolders.has(item.path)}
 									>
 										<span class="folder-icon">{@html getFolderIcon(expandedFolders.has(item.path))}</span>
 										<span>{item.name}</span>
-									</div>
+									</button>
 									{#if expandedFolders.has(item.path) && item.children}
 										<div class="folder-contents">
 											{#each item.children as child}
 												{#if child.type === 'tree'}
-													<div 
+													<button 
 														class="folder-item nested" 
 														on:click={() => toggleFolder(child.path)}
+														aria-expanded={expandedFolders.has(child.path)}
 													>
 														<span class="folder-icon">{@html getFolderIcon(expandedFolders.has(child.path))}</span>
 														<span>{child.name}</span>
-													</div>
+													</button>
 													{#if expandedFolders.has(child.path) && child.children}
 														<div class="folder-contents">
 															{#each child.children as subChild}
-																<div 
+																<button 
 																	class="file-item {currentFile?.path === subChild.path ? 'active' : ''}"
 																	on:click={() => openFile(subChild.path, subChild.sha)}
+																	aria-label="Open {subChild.name}"
 																>
 																	<span class="file-icon">{@html getFileIcon(subChild.name)}</span>
 																	<span>{subChild.name}</span>
-																</div>
+																</button>
 															{/each}
 														</div>
 													{/if}
 												{:else}
-													<div 
+													<button 
 														class="file-item {currentFile?.path === child.path ? 'active' : ''}"
 														on:click={() => openFile(child.path, child.sha)}
+														aria-label="Open {child.name}"
 													>
 														<span class="file-icon">{@html getFileIcon(child.name)}</span>
 														<span>{child.name}</span>
-													</div>
+													</button>
 												{/if}
 											{/each}
 										</div>
 									{/if}
 								</div>
 							{:else}
-								<div 
+								<button 
 									class="file-item {currentFile?.path === item.path ? 'active' : ''}"
 									on:click={() => openFile(item.path, item.sha)}
+									aria-label="Open {item.name}"
 								>
 									<span class="file-icon">{@html getFileIcon(item.name)}</span>
 									<span>{item.name}</span>
-								</div>
+								</button>
 							{/if}
 						{/each}
 					</div>
@@ -337,7 +330,6 @@
 			</div>
 		</div>
 		
-		<!-- Editor Area -->
 		<div class="editor-area">
 			{#if currentFile}
 				<div class="tab-bar">
@@ -428,6 +420,8 @@
 		border-radius: 50%;
 		cursor: pointer;
 		transition: opacity 0.2s;
+		border: none;
+		padding: 0;
 	}
 	
 	.control:hover {
@@ -533,6 +527,11 @@
 		border-radius: 4px;
 		transition: background 0.2s;
 		user-select: none;
+		width: 100%;
+		text-align: left;
+		border: none;
+		background: transparent;
+		font-family: inherit;
 	}
 	
 	.folder-item.nested {
@@ -687,7 +686,6 @@
 		color: #cccccc;
 	}
 	
-	/* Scrollbar Styling */
 	.file-tree::-webkit-scrollbar,
 	.editor::-webkit-scrollbar,
 	.code-content::-webkit-scrollbar {
