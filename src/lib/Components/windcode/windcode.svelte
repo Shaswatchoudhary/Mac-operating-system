@@ -70,15 +70,6 @@
 			
 			fileTree = buildFileTree(data.tree);
 			loading = false;
-			
-			const readme = data.tree.find(item => 
-				(item.path.toLowerCase() === 'readme.md' || 
-				 item.path.toLowerCase() === 'readme.txt') && 
-				item.type === 'blob'
-			);
-			if (readme) {
-				await openFile(readme.path, readme.sha);
-			}
 		} catch (err) {
 			console.error('Error fetching repository:', err);
 			error = err.message;
