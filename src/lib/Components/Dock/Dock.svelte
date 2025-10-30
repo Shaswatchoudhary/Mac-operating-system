@@ -9,15 +9,16 @@
   import FoxIcon from '$lib/assets/static/fox.png';
   import WallpaperIcon from '$lib/assets/static/wallpaper.png';
 
-  import PortfolioApp from "../Portfolio/PortfolioApp.svelte";
-  import CalculatorApp from "../Calculator/calculator.svelte"; 
-  import PhotosApp from "../Photos/Photos.svelte";
-  import CalendarApp from "../Calendar/Calendar.svelte"; 
-  import WindcodeApp from "../windcode/windcode.svelte";
-  import AppstoreApp from "../Appstore/Appstore.svelte";
-  import WallpaperApp from "../wallpaper/wallpaper.svelte";
-  import LaunchpadApp from "../launchpad/launchpad.svelte";
-  import FinderApp from "../Finder/Finder.svelte";
+import PortfolioApp from "../Portfolio/PortfolioApp.svelte";
+import CalculatorApp from "../Calculator/calculator.svelte"; 
+import PhotosApp from "../Photos/Photos.svelte";
+import CalendarApp from "../Calendar/Calendar.svelte"; 
+import WindcodeApp from "../windcode/windcode.svelte";
+import AppstoreApp from "../Appstore/Appstore.svelte";
+import WallpaperApp from "../wallpaper/wallpaper.svelte";
+import LaunchpadApp from "../launchpad/launchpad.svelte";
+import FinderApp from "../Finder/Finder.svelte";
+
 
   let apps = [
     { name: "Finder", icon: FinderIcon },
