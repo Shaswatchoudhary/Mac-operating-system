@@ -6,7 +6,8 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({
-			runtime: 'nodejs22.x' 
+			runtime: 'nodejs22.x',
+			split: false // ✅ recommended for Vercel’s newer build system
 		})
 	}
 };
