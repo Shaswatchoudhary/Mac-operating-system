@@ -11,7 +11,7 @@
 
   import PortfolioApp from "../Portfolio/PortfolioApp.svelte";
   import CalculatorApp from "../Calculator/CalculatorApp.svelte"; 
-  import PhotosApp from "../Photos/PhotosApp.svelte"; 
+  import PhotosApp from "../Photos/Photos.svelte";
   import CalendarApp from "../Calendar/CalendarApp.svelte"; 
   import WindcodeApp from "../Windcode/WindcodeApp.svelte";
   import AppstoreApp from "../Appstore/AppstoreApp.svelte";
