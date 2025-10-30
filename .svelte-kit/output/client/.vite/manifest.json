@@ -1,0 +1,216 @@
+{
+  ".svelte-kit/generated/client-optimized/app.js": {
+    "file": "_app/immutable/entry/app.BncuPpJ4.js",
+    "name": "entry/app",
+    "src": ".svelte-kit/generated/client-optimized/app.js",
+    "isEntry": true,
+    "imports": [
+      "_6uOvuWSK.js",
+      "_Bmdpy7vn.js",
+      "_C_2QBIIs.js",
+      "_BL0NDTmR.js",
+      "_CkB3ymRG.js"
+    ],
+    "dynamicImports": [
+      ".svelte-kit/generated/client-optimized/nodes/0.js",
+      ".svelte-kit/generated/client-optimized/nodes/1.js",
+      ".svelte-kit/generated/client-optimized/nodes/2.js"
+    ]
+  },
+  ".svelte-kit/generated/client-optimized/nodes/0.js": {
+    "file": "_app/immutable/nodes/0.CXONdl-G.js",
+    "name": "nodes/0",
+    "src": ".svelte-kit/generated/client-optimized/nodes/0.js",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_C_2QBIIs.js",
+      "_DmlCp5qU.js",
+      "_6uOvuWSK.js",
+      "_CkB3ymRG.js",
+      "_BL0NDTmR.js",
+      "_Bmdpy7vn.js",
+      "_C5K0ALp-.js"
+    ],
+    "css": [
+      "_app/immutable/assets/0.RerQS1B8.css"
+    ],
+    "assets": [
+      "_app/immutable/assets/Finder.CvewObbS.png",
+      "_app/immutable/assets/launchpad.rG8JnOQy.png",
+      "_app/immutable/assets/photos.me8ebiD4.png",
+      "_app/immutable/assets/calculator.Co4ATHwj.png",
+      "_app/immutable/assets/calendar.DGUD81v9.png",
+      "_app/immutable/assets/vscode.fEc3hqsc.png",
+      "_app/immutable/assets/Appstore.DP_D3PTD.png",
+      "_app/immutable/assets/fox.DBj8lfdH.png",
+      "_app/immutable/assets/wallpaper.6NYI0oPX.png",
+      "_app/immutable/assets/wallpaper1.BYZJ0Q8T.png",
+      "_app/immutable/assets/wallpaper2.lRzDsGue.png",
+      "_app/immutable/assets/wallpaper3.BvLT4vko.png",
+      "_app/immutable/assets/wallpaper4.CgOv1Jru.png",
+      "_app/immutable/assets/music.DmUWX_hk.png",
+      "_app/immutable/assets/wallpaper6.DOeJCnmx.png",
+      "_app/immutable/assets/mac5._ARyhP3U.png",
+      "_app/immutable/assets/macos.BH1-GLE2.mp3"
+    ]
+  },
+  ".svelte-kit/generated/client-optimized/nodes/1.js": {
+    "file": "_app/immutable/nodes/1.hnbf44kA.js",
+    "name": "nodes/1",
+    "src": ".svelte-kit/generated/client-optimized/nodes/1.js",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_C_2QBIIs.js",
+      "_DmlCp5qU.js",
+      "_6uOvuWSK.js",
+      "_Bmdpy7vn.js",
+      "_C5K0ALp-.js",
+      "_Bn49OF4S.js"
+    ]
+  },
+  ".svelte-kit/generated/client-optimized/nodes/2.js": {
+    "file": "_app/immutable/nodes/2.DEBTL6Xv.js",
+    "name": "nodes/2",
+    "src": ".svelte-kit/generated/client-optimized/nodes/2.js",
+    "isEntry": true,
+    "isDynamicEntry": true,
+    "imports": [
+      "_C_2QBIIs.js",
+      "_DmlCp5qU.js"
+    ]
+  },
+  "_6uOvuWSK.js": {
+    "file": "_app/immutable/chunks/6uOvuWSK.js",
+    "name": "runtime"
+  },
+  "_BL0NDTmR.js": {
+    "file": "_app/immutable/chunks/BL0NDTmR.js",
+    "name": "index-client",
+    "imports": [
+      "_6uOvuWSK.js"
+    ]
+  },
+  "_Bmdpy7vn.js": {
+    "file": "_app/immutable/chunks/Bmdpy7vn.js",
+    "name": "render",
+    "imports": [
+      "_6uOvuWSK.js",
+      "_C_2QBIIs.js"
+    ]
+  },
+  "_Bn49OF4S.js": {
+    "file": "_app/immutable/chunks/Bn49OF4S.js",
+    "name": "entry",
+    "imports": [
+      "_6uOvuWSK.js",
+      "_BL0NDTmR.js"
+    ]
+  },
+  "_C5K0ALp-.js": {
+    "file": "_app/immutable/chunks/C5K0ALp-.js",
+    "name": "lifecycle",
+    "imports": [
+      "_6uOvuWSK.js"
+    ]
+  },
+  "_C_2QBIIs.js": {
+    "file": "_app/immutable/chunks/C_2QBIIs.js",
+    "name": "disclose-version",
+    "imports": [
+      "_6uOvuWSK.js"
+    ]
+  },
+  "_CkB3ymRG.js": {
+    "file": "_app/immutable/chunks/CkB3ymRG.js",
+    "name": "props",
+    "imports": [
+      "_6uOvuWSK.js"
+    ]
+  },
+  "_DmlCp5qU.js": {
+    "file": "_app/immutable/chunks/DmlCp5qU.js",
+    "name": "legacy",
+    "imports": [
+      "_6uOvuWSK.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/client/entry.js": {
+    "file": "_app/immutable/entry/start.Df7Kzhmg.js",
+    "name": "entry/start",
+    "src": "node_modules/@sveltejs/kit/src/runtime/client/entry.js",
+    "isEntry": true,
+    "imports": [
+      "_Bn49OF4S.js"
+    ]
+  },
+  "src/lib/assets/audio/macos.mp3": {
+    "file": "_app/immutable/assets/macos.BH1-GLE2.mp3",
+    "src": "src/lib/assets/audio/macos.mp3"
+  },
+  "src/lib/assets/static/Appstore.png": {
+    "file": "_app/immutable/assets/Appstore.DP_D3PTD.png",
+    "src": "src/lib/assets/static/Appstore.png"
+  },
+  "src/lib/assets/static/Finder.png": {
+    "file": "_app/immutable/assets/Finder.CvewObbS.png",
+    "src": "src/lib/assets/static/Finder.png"
+  },
+  "src/lib/assets/static/calculator.png": {
+    "file": "_app/immutable/assets/calculator.Co4ATHwj.png",
+    "src": "src/lib/assets/static/calculator.png"
+  },
+  "src/lib/assets/static/calendar.png": {
+    "file": "_app/immutable/assets/calendar.DGUD81v9.png",
+    "src": "src/lib/assets/static/calendar.png"
+  },
+  "src/lib/assets/static/fox.png": {
+    "file": "_app/immutable/assets/fox.DBj8lfdH.png",
+    "src": "src/lib/assets/static/fox.png"
+  },
+  "src/lib/assets/static/launchpad.png": {
+    "file": "_app/immutable/assets/launchpad.rG8JnOQy.png",
+    "src": "src/lib/assets/static/launchpad.png"
+  },
+  "src/lib/assets/static/mac5.png": {
+    "file": "_app/immutable/assets/mac5._ARyhP3U.png",
+    "src": "src/lib/assets/static/mac5.png"
+  },
+  "src/lib/assets/static/music.png": {
+    "file": "_app/immutable/assets/music.DmUWX_hk.png",
+    "src": "src/lib/assets/static/music.png"
+  },
+  "src/lib/assets/static/photos.png": {
+    "file": "_app/immutable/assets/photos.me8ebiD4.png",
+    "src": "src/lib/assets/static/photos.png"
+  },
+  "src/lib/assets/static/vscode.png": {
+    "file": "_app/immutable/assets/vscode.fEc3hqsc.png",
+    "src": "src/lib/assets/static/vscode.png"
+  },
+  "src/lib/assets/static/wallpaper.png": {
+    "file": "_app/immutable/assets/wallpaper.6NYI0oPX.png",
+    "src": "src/lib/assets/static/wallpaper.png"
+  },
+  "src/lib/assets/wallpaper/wallpaper1.png": {
+    "file": "_app/immutable/assets/wallpaper1.BYZJ0Q8T.png",
+    "src": "src/lib/assets/wallpaper/wallpaper1.png"
+  },
+  "src/lib/assets/wallpaper/wallpaper2.png": {
+    "file": "_app/immutable/assets/wallpaper2.lRzDsGue.png",
+    "src": "src/lib/assets/wallpaper/wallpaper2.png"
+  },
+  "src/lib/assets/wallpaper/wallpaper3.png": {
+    "file": "_app/immutable/assets/wallpaper3.BvLT4vko.png",
+    "src": "src/lib/assets/wallpaper/wallpaper3.png"
+  },
+  "src/lib/assets/wallpaper/wallpaper4.png": {
+    "file": "_app/immutable/assets/wallpaper4.CgOv1Jru.png",
+    "src": "src/lib/assets/wallpaper/wallpaper4.png"
+  },
+  "src/lib/assets/wallpaper/wallpaper6.png": {
+    "file": "_app/immutable/assets/wallpaper6.DOeJCnmx.png",
+    "src": "src/lib/assets/wallpaper/wallpaper6.png"
+  }
+}

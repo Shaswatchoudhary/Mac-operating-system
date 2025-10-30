@@ -1,4 +1,5 @@
 <script>
+  
   import FinderIcon from '$lib/assets/static/Finder.png';
   import LaunchpadIcon from '$lib/assets/static/launchpad.png';
   import PhotosIcon from '$lib/assets/static/photos.png';
