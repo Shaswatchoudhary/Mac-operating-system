@@ -26,10 +26,12 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const NVM_RC_VERSION: string;
 	export const TERM_PROGRAM: string;
 	export const rvm_bin_path: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
+	export const NVM_CD_FLAGS: string;
 	export const ANDROID_HOME: string;
 	export const TERM: string;
 	export const SHELL: string;
@@ -47,6 +49,7 @@ declare module '$env/static/private' {
 	export const COLOR: string;
 	export const npm_config_noproxy: string;
 	export const npm_config_local_prefix: string;
+	export const NVM_DIR: string;
 	export const USER: string;
 	export const COMMAND_MODE: string;
 	export const npm_config_globalconfig: string;
@@ -132,10 +135,12 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		NVM_RC_VERSION: string;
 		TERM_PROGRAM: string;
 		rvm_bin_path: string;
 		NODE: string;
 		INIT_CWD: string;
+		NVM_CD_FLAGS: string;
 		ANDROID_HOME: string;
 		TERM: string;
 		SHELL: string;
@@ -153,6 +158,7 @@ declare module '$env/dynamic/private' {
 		COLOR: string;
 		npm_config_noproxy: string;
 		npm_config_local_prefix: string;
+		NVM_DIR: string;
 		USER: string;
 		COMMAND_MODE: string;
 		npm_config_globalconfig: string;
